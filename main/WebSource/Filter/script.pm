@@ -69,7 +69,8 @@ sub handle {
 
 sub keep {
   my $self = shift;
-  my $val = shift;
+  my $env = shift;
+  my $val = $env->dataString;
   my $script = $self->{scriptfile};
   my $res = system($script,$val);
   return $res == 0;
