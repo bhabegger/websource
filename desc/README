@@ -1,0 +1,81 @@
+WebSource example descriptions
+==============================
+
+This repository includes example WebSource description. As of today
+(2004-01-02) they are fully functional. 
+
+If you have set up any wsd files yourself, feel free to send them to me
+(habegger@users.sf.net) for inclusion in this repository.
+
+Using the descriptions
+======================
+
+Here is given a short descrition of the working examples descriptions and
+how to make a successful call with ws-query.
+
+* "1001salles.wsd" 
+  
+  This description allows to query the 1001salles.com web site.
+  The query can be parameterized with only one option (-d) which allows
+  to set the french departement.
+
+  An example call is :
+
+    ws-query -s 1001salles.wsd -d 44
+
+* "cia-wfb.wsd"
+
+  This description allows to extract from the CIA world fact book, a short
+  decription of each country containing the country's name, population and
+  coordinates.
+
+  To call this task :
+
+    ws-query -s cia-wfb.wsd
+
+* "fibo.wsd"
+
+  This description calculates the fibonacci sequence starting a given integer.
+  It has a single parameter (-n) : the initial number.
+
+  It can be called as follows :
+
+    ws-query -s fibo.wsd -n 1
+
+* "google-service.wsd"
+
+  This description allows to query google using its web service (ie. the
+  Google API). It will work provided you replace the string MYGOOGLEKEY by
+  you're own key to the google API service or you use the key parameter
+
+  An example call is as follows :
+
+   ws-query -s google-service.wsd -k YOURGOOGLEKEY "XML Web Services"
+  
+* "wayback.wsd"
+
+  This task allows to query archive.org to obtain an old archived version
+  of a web page. With this description, the obtained version is both saved
+  to a file in /tmp with a name following the template wayback-XXXXX.html
+  and output to the console. The url for which to find the old version is
+  given via a "url" (-u) parameter and the year of the version to fetch is
+  given via the "year" (-y) parameter.
+
+  Warning : In this description a dummy operator with initial input was
+            added. Without this initial input nothing would happen since
+            the reception of data by the query operator triggers the
+            production of results.
+
+  An example call is the following :
+
+   ws-query -s wayback.wsd -y 2000 -u http://www.grappa.univ-lille3.fr/
+
+* "quotations.wsd"
+
+  This very simple task (just one operator) allows to obtain the soap
+  results returned for a given list of stock quote symbols.
+
+  An example call :
+
+    ws-query -s quotations.wsd MDKFF.PK IBM MSFT
+
