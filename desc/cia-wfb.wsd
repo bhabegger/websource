@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE ws:source SYSTEM "/usr/local/share/perl/5.8.2/WebSource/websource.dtd">
+<ws:source name="CIA World Fact Book"
+  xmlns:ws="http://wwwsource.free.fr/ns/websource"
+  xmlns:xi="http://www.w3.org/2003/XInclude"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <ws:fetch name="fetch-list" forward-to="extract-list" type="xml">
+    <data>http://www.cia.gov/cia/publications/factbook/countrylisting.html</data>
+  </ws:fetch>
+
+  <ws:extract name="extract-list" forward-to="fetch-item">
+    <path>//li/a/@href</path>
+  </ws:extract>
+
+  <ws:fetch name="fetch-item" forward-to="extract-item" type="xml" />
+  <ws:extract name="extract-item" type="xslt" forward-to="map">
+    <xi:include href="cia-wfb.xsl" />
+  </ws:extract>
+
+  <ws:map name="map" forward-to="format">
+    <map-to name="country" select="/country-description/name" />
+    <map-to name="population" select="/country-description/population" />
+    <map-to name="coordinates" select="/country-description/coordinates" />
+  </ws:map>
+
+<!--
+  <ws:database name="db" forward-to="format">
+    <parameters>
+      <param name="db" value="factbook" />
+      <param name="user" value="habegger" />
+      <param name="pass" value="n62Odj" />
+    </parameters>
+    <query>
+      INSERT INTO country(name, population, coordinates)
+      VALUES ('$country','$population','$coordinates')
+    </query>
+  </ws:database>
+-->
+
+  <ws:format name="format" format="xml"/>
+</ws:source>

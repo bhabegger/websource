@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE ws:source SYSTEM "websource.dtd">
+<ws:source name="1001salles" xmlns:ws="http://wwwsource.free.fr/ns/websource">
+  <ws:options>
+    <option name="dept" shortcut="d" type="integer" />
+  </ws:options>
+
+  <ws:fetch name="init" forward-to="q">
+    <data>http://www.1001salles.com/Prive/resultat.asp</data>
+  </ws:fetch>
+
+  <ws:query name="q" method="POST" forward-to="fetcher">
+    <base>http://www.1001salles.com/Prive/resultat.asp</base>
+    <parameters>
+      <param type="hidden" name="dep1" default="44">
+        <ws:set-attribute name="default" value-of="dept" />
+      </param>
+      <param type="hidden" name="dep2" default="" />
+      <param type="hidden" name="dep3" default="" />
+      <param type="hidden" name="pays" default="1"/>
+      <param type="hidden" name="promo" default="" />
+      <param type="hidden" name="Ville1" default="0" />
+      <param type="hidden" name="Nb_typo" default="10" />
+      <param type="checkbox" name="Typo" default="3"/> <!-- chateau -->
+      <param type="checkbox" name="Capa" default="3"/> <!-- 51-100  -->
+      <param type="hidden" name="x" default="22" />
+      <param type="hidden" name="y" default="7" />
+    </parameters>
+  </ws:query>
+
+  <ws:fetch name="fetcher" forward-to="cache1" />
+
+  <ws:cache name="cache1" forward-to="parser"
+            directory="/tmp" template="1001salles-init-XXXXX.html" />
+
+  <ws:xmlparser name="parser" forward-to="select" />
+
+  <ws:extract name="select" forward-to="format">
+    <path>//tr[@class="MBI2"]</path>
+  </ws:extract>
+
+  <ws:extract type="xslt" name="format" forward-to="out"
+              xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:stylesheet version="1.0">
+      <xsl:output method="xml" indent="yes" />
+      <xsl:template match="tr">
+        <salle>
+          <nom><xsl:value-of select="td[4]" /> </nom>
+          <ville><xsl:value-of select="td[3]" /></ville>
+          <capacite><xsl:value-of select="td[5]" /></capacite>
+         </salle>
+      </xsl:template>
+    </xsl:stylesheet>
+  </ws:extract> 
+
+  <ws:format name="out" format="xml" />
+</ws:source>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE ws:source SYSTEM "websource.dtd">
+<ws:source name="test" xmlns:ws="http://wwwsource.free.fr/ns/websource">
+  <ws:options>
+    <option name="number" shortcut="n" type="string" />
+  </ws:options>
+
+  <ws:dummy name="query" forward-to="transform">
+    <xmldata>
+      <data>
+        <ws:set-attribute name="a" value-of="number" />
+        <ws:set-attribute name="b" value-of="number" />
+      </data>
+    </xmldata>
+  </ws:dummy>
+
+  <ws:extract type="xslt" name="transform" forward-to="transform extract">
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+      <xsl:template match="data">
+	<data>
+	  <xsl:attribute name="a"><xsl:value-of select="@b" /></xsl:attribute>
+	  <xsl:attribute name="b"><xsl:value-of select="@a + @b" /></xsl:attribute>
+	</data>
+      </xsl:template>
+    </xsl:stylesheet>
+  </ws:extract>
+  
+  <ws:extract name="extract">
+    <path>/data/@b</path>
+  </ws:extract>
+</ws:source>

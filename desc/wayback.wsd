@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE ws:source SYSTEM "websource.dtd">
+<ws:source name="web.archive.org" xmlns:ws="http://wwwsource.free.fr/ns/websource">
+  <ws:options>
+    <option name="url" shortcut="u" type="string" />
+    <option name="year" shortcut="y" type="integer" />
+  </ws:options>
+
+  <ws:query name="q" method="POST" forward-to="fetcher">
+    <base>http://web.archive.org/archive_request_ng</base>
+    <parameters>
+      <param type="hidden" name="collection" default="web"/>
+      <param type="text" name="url" default="">
+        <ws:set-attribute name="default" value-of="url" />
+      </param>
+      <param type="option" name="month" default="00"/>
+      <param type="option" name="day" default="00"/>
+      <param type="option" name="year" default="00">
+        <ws:set-attribute name="default" value-of="year" />
+      </param>
+      <param type="option" name="month2" default="00"/>
+      <param type="option" name="day2" default="00"/>
+      <param type="option" name="year2" default="00"/>
+      <param type="submit" name="submit" default="Go Wayback"/>
+      <param type="radio" name="exact" default="yes"/>
+      <param type="radio" name="show_host" default="no"/>
+      <param type="radio" name="redirect" default="re_"/>
+      <param type="option" name="mime" default="xx_"/>
+      <param type="checkbox" name="show_all" default=""/>
+      <param type="checkbox" name="show_compare" default=""/>
+      <param type="checkbox" name="show_convert" default=""/>
+    </parameters>
+  </ws:query>
+  
+  <ws:fetch type="xml" name="fetcher" forward-to="out"
+            cache="wayback-XXXXX.html" format="node"/>
+
+  <ws:format name="out" format="xml" />
+</ws:source>

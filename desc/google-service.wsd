@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<ws:source name="bonjour.fr"
+  xmlns:ws="http://wwwsource.free.fr/ns/websource">
+
+  <ws:soap name="google-service" forward-to="parser">
+    <parameters>
+      <param name="service" value="http://api.google.com/GoogleSearch.wsdl" />
+      <param name="method"  value="doGoogleSearch" />
+      <param name="parameters" 
+             value="key data start maxResults filter restrict safeSearch lr ie oe" />
+      <param name="key"        value="jUM7k/xQFHK/FhCd6bXRZ2usrV6lFGBy" />
+      <param name="start"      value="0" />
+      <param name="maxResults" value="10" />
+      <param name="filter"     value="0"/>
+      <param name="restrict"   value=""/>
+      <param name="safeSearch" value="0"/>
+      <param name="lr"         value=""/>
+      <param name="ie"         value="utf8"/>
+      <param name="oe"         value="utf8"/>
+    </parameters>
+  </ws:soap>
+
+  <ws:xmlparser name="parser" forward-to="extract" />
+  <ws:extract name="extract" forward-to="output">
+    <path>//item[URL]</path>
+  </ws:extract>
+
+  <ws:format name="output" format="xml" />
+</ws:source>
