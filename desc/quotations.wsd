@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<ws:source name="stock-quote"
+  xmlns:ws="http://wwwsource.free.fr/ns/websource">
+
+  <ws:soap name="quotations">
+    <parameters>
+      <param name="service" value="http://www.xmethods.net/sd/StockQuoteService.wsdl" />
+      <param name="method"  value="getQuote" />
+    </parameters>
+  </ws:soap>
+
+</ws:source>
