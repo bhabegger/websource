@@ -56,7 +56,7 @@ sub new {
   return $self;
 }
 
-=item C<< $mod->_init_
+=item C<< $mod->_init_ >>
 
 Does some initializations. Any operator $op inheriting from WebSource::Module
 should call $op->SUPER::_init_ inside a redefined _init_ method.
