@@ -8,7 +8,7 @@
       <param name="method"  value="doGoogleSearch" />
       <param name="parameters" 
              value="key data start maxResults filter restrict safeSearch lr ie oe" />
-      <param name="key"        value="jUM7k/xQFHK/FhCd6bXRZ2usrV6lFGBy" />
+      <param name="key"        value="MYGOOLEKEY" />
       <param name="start"      value="0" />
       <param name="maxResults" value="10" />
       <param name="filter"     value="0"/>
