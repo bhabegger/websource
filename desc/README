@@ -27,7 +27,8 @@ how to make a successful call with ws-query.
 
   This description allows to extract from the CIA world fact book, a short
   decription of each country containing the country's name, population and
-  coordinates.
+  coordinates. It uses an extrernal stylesheet (cia-wsf.xsl) which
+  transforms the HTML country description document into a XML document.
 
   To call this task :
 
@@ -41,6 +42,15 @@ how to make a successful call with ws-query.
   It can be called as follows :
 
     ws-query -s fibo.wsd -n 1
+
+* "google.wsd"
+
+  Queries google using the online classical Web version. By simulating a
+  user access to the source, it does not require having a user key.
+
+  Example call :
+
+    ws-query -s google.wsd -q "DOM quick reference"
 
 * "google-service.wsd"
 
@@ -78,4 +88,36 @@ how to make a successful call with ws-query.
   An example call :
 
     ws-query -s quotations.wsd MDKFF.PK IBM MSFT
+
+* "script-example.wsd"
+
+  Added a simple example using the script filter.
+
+  Here is an example call :
+
+    ws-query -s script-example.wsd 5 4 2 1 6 3 4
+
+* "google-dir.wsd"
+
+  List the directories which are found under the top directory of Google
+  Directories.
+
+  Example call :
+
+   ws-query -s google-dir.wsd
+
+* "google-pdf.wsd" and "google-pdf-bis.wsd"
+
+  Query google for PDF files using the Web-based interface.
+  These two descriptions use Google to query for PDF documents. In both
+  cases a general Google query is sent returning all the results. These are
+  then filtered to keep only the PDF results. "google-pdf.wsd" does this by
+  keeping items which were detected by google as being PDF.
+  "google-pdf-bis.pdf" does this by querying the server on which the file is
+  found with a HEAD request and using the Content-type entry.
+
+  Example calls :
+
+  ws-query -s google-pdf.wsd "DOM quick reference"
+  ws-query -s google-pdf-bis.wsd "DOM quick reference"
 

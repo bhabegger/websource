@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE ws:source SYSTEM "websource.dtd">
+<ws:source name="Google.fr" xmlns:ws="http://wwwsource.free.fr/ns/websource">
+
+  <ws:fetch name="fetch-top" type="xml" forward-to="extract-top">
+    <data>http://directory.google.com/Top/</data>
+  </ws:fetch>
+
+  <ws:extract name="extract-top" forward-to="format" format="url">
+    <path>//p/table/tr/td//a/@href</path>  
+  </ws:extract>
+
+  <ws:format name="format" format="string" />
+</ws:source>

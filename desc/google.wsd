@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE ws:source SYSTEM "websource.dtd">
+<ws:source name="Google.fr" xmlns:ws="http://wwwsource.free.fr/ns/websource">
+  <ws:options>
+    <option name="query" shortcut="q" type="string" />
+  </ws:options>
+
+  <ws:dummy name="dummy" forward-to="q">
+    <data />
+  </ws:dummy>
+
+  <ws:query name="q" method="GET" forward-to="fetcher">
+    <base>http://www.google.fr/search</base>
+    <parameters>
+      <param name="q" default="">
+        <ws:set-attribute name="default" value-of="query" />
+      </param>
+      <param name="hl" default="en" />
+      <param name="lr" default="en" />
+      <param name="ie" default="UTF-8" />
+      <param name="oe" default="UTF-8" />
+      <param name="spell" default="0" />
+    </parameters>
+  </ws:query>
+  
+  <ws:fetch name="fetcher" forward-to="cache" />
+
+  <ws:cache name="cache" directory="/tmp" template="google-XXXXX.html"
+      forward-to="parser" />
+  
+  <ws:xmlparser name="parser" forward-to="links next" />
+
+  <ws:extract name="next" forward-to="fetcher" method="xpath" format="url">
+    <path>/descendant::a[./child::img[@src="/nav_next.gif"]]/@href</path>
+  </ws:extract>
+
+  <ws:extract name="links" method="xpath" format="url" forward-to="fetch-ans">
+    <path>//p[@class="g"]/a[1]/@href</path>
+  </ws:extract>
+
+</ws:source>

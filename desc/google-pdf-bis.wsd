@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE ws:source SYSTEM "websource.dtd">
+<ws:source name="Google.fr" xmlns:ws="http://wwwsource.free.fr/ns/websource">
+
+  <ws:query name="q" method="GET" forward-to="fetcher">
+    <base>http://www.google.fr/search</base>
+    <parameters>
+      <param name="q" value-of="data"/>
+      <param name="hl" default="en" />
+      <param name="lr" default="en" />
+      <param name="ie" default="UTF-8" />
+      <param name="oe" default="UTF-8" />
+      <param name="spell" default="0" />
+    </parameters>
+  </ws:query>
+  
+  <ws:fetch name="fetcher" type="xml" forward-to="links next"/>
+
+  <ws:extract name="next" forward-to="fetcher" method="xpath">
+    <path>/descendant::a[./child::img[@src="/nav_next.gif"]]/@href</path>
+  </ws:extract>
+
+  <ws:extract name="links" method="xpath" forward-to="fetch-head">
+    <path>//p[@class="g"]/a/@href</path>
+  </ws:extract>
+
+  <ws:fetch name="fetch-head" forward-to="type-filter">
+    <parameters>
+      <param name="method" value="HEAD" />
+    </parameters>
+  </ws:fetch>
+
+  <ws:filter name="type-filter" type="type" forward-to="format">
+    <parameters>
+      <param name="include" value="application/pdf" />
+    </parameters>
+  </ws:filter>
+
+  <ws:format name="format" format="select">
+    <parameters>
+      <param name="select" value="baseuri" />
+    </parameters>
+  </ws:format>
+</ws:source>

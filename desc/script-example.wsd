@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<ws:source name="dummy" xmlns:ws="http://wwwsource.free.fr/ns/websource">
+
+<ws:dummy name="first" forward-to="second third" />
+<ws:dummy name="second" forward-to="fourth" />
+<ws:dummy name="third" forward-to="fourth" />
+<ws:filter type="script" name="fourth" forward-to="fivth">
+#!/bin/bash
+if (( $1 > 3 ));
+then
+  exit 0;
+else
+  exit 1;
+fi
+</ws:filter>
+<ws:dummy name="fivth" />
+
+</ws:source>
