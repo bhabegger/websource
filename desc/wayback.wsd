@@ -32,8 +32,10 @@
     </parameters>
   </ws:query>
   
-  <ws:fetch type="xml" name="fetcher" forward-to="out"
-            cache="wayback-XXXXX.html" format="node"/>
+  <ws:fetch type="xml" name="fetcher" forward-to="cache" />
+            
+  <ws:cache name="cache" forward-to="out"
+            directory="/tmp" template="wayback-XXXXX.html" />
 
   <ws:format name="out" format="xml" />
 </ws:source>
