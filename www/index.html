@@ -12,17 +12,24 @@
     <hr />
     <h2>What is WebSource ?</h2>
     <div>
-      WebSource is a perl module abstracting application access to
-      data available on the Web and accessible via a set of
-      dynamically managed web pages. This means posting a query via an
-      HTTP server, fetching the set of pages and extracting the
-      relevant pieces of information.
+      WebSource is a perl module abstracting application access to data available on the Web and
+      accessible via a set of dynamically managed web pages. This means posting a query via an
+      HTTP server, fetching the set of pages and extracting the relevant pieces of information.
+      
+      It defines a set of generic operators which when correctly parameterized and
+      combined together allow to define a specific web extraction task. The
+      task can be describe in an XML language called WetDL (for Web
+      Extraction Task Description Language).
+
+      Given a WetDL description (a wsd file), the perl script ws-query by
+      using the WebSource library allows to execute tasks such as querying
+      Google, extracting country information from the CIA World Fact Book, etc.
     </div>
     
     <h2>How does it work ?</h2>
     <div>
-      There are different elements of the process which are specific
-      to each source :
+      There are different elements of an extraction process which are specific
+      to the task :
       <ul>
 	<li>the parameters of the query and the access method to use</li>
 	<li>the part of a result page pointing to the next result page</li>
@@ -32,35 +39,72 @@
       WebSource works by taking a description of these elements and does
       the rest. It takes as input such a description and a query to the
       source (with the source specific parameters), sends the query to
-      the HTTP serveur, retrieves the first result page, extracts the
+      the HTTP server, retrieves the first result page, extracts the
       results and the link to the next result pages, fetches that other
       page, extracts the new results and the new link,... until it
       cannot find another link to a next page of results.
     </div>
     
-    <h2>Where can I get it ? </h2>
+    <h2 id="getting">Where can I get it ? </h2>
     <div>
-      It will soon be made available on the sourceforge cvs.
+      It is available either via cvs or from the project page on
+      sourceforge.
+      
+      New releases are made available from the project page :
+      <a href="http://sourceforge.net/projects/websource/">
+        http://sourceforge.net/projects/websource/
+      </a>
+      
+      Different parts of WebSource are also available on the anonymous
+      sourceforge cvs server. To checkout a given module just type the
+      following (just give an empty password when asked for one) :
+      <pre>
+cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/websource login
+cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/websource co modulename
+      </pre>
+      
+      The available modules are the following :
+      <ul>
+        <li><b>main</b> : contains the WebSource perl modules and scripts</li>
+        <li><b>www</b>  : the websource.sourceforge.net web site pages (ie. this site)</li>
+        <li><b>desc</b> : a set of example description files
+      </ul>
     </div>
 
     <h2>How do I install the module ?</h2>
     <div>
       Get and decompress the archive, do a usal
-      <tt>perl Makefile.PL</tt>, <tt>make</tt>, <tt>make
-	install</tt>. There is no make test since I haven't added
-      tests yet.
+      <pre>
+perl Makefile.PL
+make
+make install
+      </pre>
+      You can add a <tt>make test</tt> between the last two lines but it
+      only does a 'use' test for the moment.
     </div>
 
-    <h2>How do I get it to work ?</h2>
+    <h2>How do a use a Web Source description ?</h2>
+    First you need to make such a description accessible from your system.
+    The -s option of ws-query can take either a local filename or a URL.
+
+    Then you need to see which parameters the description takes (take a look
+    at the &lt;ws:options&gt; element in the wsd file). Then you can execute
+    the task with your parameters with ws-query.
+
+    <h2>Where can I find wsd files ?</h2>
+    Some example wsd files are available from the WebSource cvs server.
+    (See the <a href="getting">Where do I get WebSource</a> section).
+    
+    <h2>How do I make a perl script making use of the library ?</h2>
     The easiest way to get started is by typing the following example
-    perl script using the module allowing to query Google (this script
-  is available <a href="first.pl">here</a>):
+    perl script using the module allowing to query Google (by using the
+    google.wsd file) :
     <pre>
 #!/usr/bin/perl
 use WebSource;
 
 # Give a WebSource description URI
-my $wsd = "http://wwwsource.free.fr/desc/google.xml";
+my $wsd = "/path/to/google.wsd";
 
 # Build a WebSource instance
 my $ws = WebSource->new(wsd => $wsd);
@@ -95,12 +139,12 @@ while(my $res = $ws->next_result()) {
       which give a bit more detailed information of themselves. You
       can either consult the man pages locally.
 
-      You can also send an email my sourceforge email address habegger _at_
-users.sf.net.
+      You can also send an email my sourceforge email address habegger _at_ users.sf.net.
 
-      For continuous information on the evolution of the project a
-sourceforge mailing list named websource-info is available.
+      For continuous information on the evolution of the project a sourceforge mailing list
+      named websource-info is available.
   </div>
+
   <h2>Who initiated the project ?</h2>
   <div>
     Well I did. That mean Benjamin Habegger. I have just finished my Phd in
