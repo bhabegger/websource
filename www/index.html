@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 <!--
-  $Revision: 1.5 $
+  $Revision: 1.6 $
   $Author: habegger $
 -->
 <!DOCTYPE html 
@@ -15,23 +15,25 @@
     <h1>WebSource : a generic application access to the web </h1>
     <hr />
     <h2>What is WebSource ?</h2>
-    <div>
+    <p>
       WebSource is a perl module abstracting application access to data available on the Web and
       accessible via a set of dynamically managed web pages. This means posting a query via an
       HTTP server, fetching the set of pages and extracting the relevant pieces of information.
-      
+    </p>
+    <p>
       It defines a set of generic operators which when correctly parameterized and
       combined together allow to define a specific web extraction task. The
       task can be describe in an XML language called WetDL (for Web
       Extraction Task Description Language).
-
+    </p>
+    <p>
       Given a WetDL description (a wsd file), the perl script ws-query by
       using the WebSource library allows to execute tasks such as querying
       Google, extracting country information from the CIA World Fact Book, etc.
-    </div>
+    </p>
     
     <h2>How does it work ?</h2>
-    <div>
+    <p>
       There are different elements of an extraction process which are specific
       to the task :
       <ul>
@@ -47,18 +49,20 @@
       results and the link to the next result pages, fetches that other
       page, extracts the new results and the new link,... until it
       cannot find another link to a next page of results.
-    </div>
+    </p>
     
     <h2 id="getting">Where can I get it ? </h2>
-    <div>
-      It is available either via cvs or from the project page on
-      sourceforge.
-      
+    <p>
+       It is available either via cvs or from the project page on
+       sourceforge.
+    </p>
+    <p>
       New releases are made available from the project page :
       <a href="http://sourceforge.net/projects/websource/">
         http://sourceforge.net/projects/websource/
       </a>
-      
+    </p>
+    <p>
       Different parts of WebSource are also available on the anonymous
       sourceforge cvs server. To checkout a given module just type the
       following (just give an empty password when asked for one) :
@@ -73,10 +77,10 @@ cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/websource co modulenam
         <li><b>www</b>  : the websource.sourceforge.net web site pages (ie. this site)</li>
         <li><b>desc</b> : a set of example description files
       </ul>
-    </div>
+    </p>
 
     <h2>How do I install the module ?</h2>
-    <div>
+    <p>
       Get and decompress the archive, do a usal
       <pre>
 perl Makefile.PL
@@ -85,25 +89,30 @@ make install
       </pre>
       You can add a <tt>make test</tt> between the last two lines but it
       only does a 'use' test for the moment.
-    </div>
+    </p>
 
     <h2>How do a use a Web Source description ?</h2>
-    First you need to make such a description accessible from your system.
-    The -s option of ws-query can take either a local filename or a URL.
-
-    Then you need to see which parameters the description takes (take a look
-    at the &lt;ws:options&gt; element in the wsd file). Then you can execute
-    the task with your parameters with ws-query.
-
+    <p>
+      First you need to make such a description accessible from your system.
+      The -s option of ws-query can take either a local filename or a URL.
+    </p>
+    <p>
+      Then you need to see which parameters the description takes (take a look
+      at the &lt;ws:options&gt; element in the wsd file). Then you can execute
+      the task with your parameters with ws-query.
+    </p>
+    
     <h2>Where can I find wsd files ?</h2>
-    Some example wsd files are available from the WebSource cvs server.
-    (See the <a href="getting">Where do I get WebSource</a> section).
+    <p>Some example wsd files are available from the WebSource cvs server.
+      (See the <a href="getting">Where do I get WebSource</a> section).
+    </p>
     
     <h2>How do I make a perl script making use of the library ?</h2>
-    The easiest way to get started is by typing the following example
-    perl script using the module allowing to query Google (by using the
-    google.wsd file) :
-    <pre>
+    <p>
+      The easiest way to get started is by typing the following example
+      perl script using the module allowing to query Google (by using the
+      google.wsd file) :
+      <pre>
 #!/usr/bin/perl
 use WebSource;
 
@@ -133,11 +142,11 @@ while(my $res = $ws->next_result()) {
 # all the ressults extracted
 # set_query and next_result use a lazy method so a page is downloaded
 # and its results extracted only when needed
-    </pre>
-</div>
+      </pre>
+    </p>
 
-  <h2>Where do I get more information ?</h2>
-  <div>
+    <h2>Where do I get more information ?</h2>
+    <p>
       For more information you can consult the man pages of the
       project. You can start from the WebSource man page. The each type of
       operator is implemented as perl module which each have their man page.
@@ -151,44 +160,46 @@ while(my $res = $ws->next_result()) {
       </a>).
 
       You can also send an email my sourceforge email address habegger _at_ users.sf.net.
-  </div>
+    </p>
 
-  <h2>Who initiated the project ?</h2>
-  <div>
-    Well I did. That mean Benjamin Habegger. I have just finished my Phd in
-    Computer Science at the University of Nantes and am currently working
-    with the Grappa research team. You can get more
-    information about me, my research and teaching on my home page :
-    <a href="http://www.grappa.univ-lille3.fr/~habegger/">
-      http://www.grappa.univ-lille3.fr/~habegger/
-    </a>
-  </div>
+    <h2>Who initiated the project ?</h2>
+    <p>
+      Well I did. That mean Benjamin Habegger. I have just finished my Phd in
+      Computer Science at the University of Nantes and am currently working
+      with the Grappa research team. You can get more
+      information about me, my research and teaching on my home page :
+      <a href="http://www.grappa.univ-lille3.fr/~habegger/">
+        http://www.grappa.univ-lille3.fr/~habegger/
+      </a>
+    </p>
 
-  <h2>How can I contribute ?</h2>
-  <div>
-    You can contribute to this small project by suggesting ideas,
-    code, and new description files by writing me an email.
-  </div>
+    <h2>How can I contribute ?</h2>
+    <p>
+      You can contribute to this small project by suggesting ideas,
+      code, and new description files by writing me an email.
+    </p>
 
     <hr />
-    <div>
-      Last date : $Date: 2005-01-02 18:10:18 $
-    </div>
+    <p>
+      Last date : $Date: 2005-01-02 18:15:03 $
+    </p>
+    
     <hr />
-    <div>
+    <p>
       <a href="http://validator.w3.org/check/referer">
 	<img
 	     src="http://www.w3.org/Icons/valid-xhtml10"
 	     alt="Valid XHTML 1.0!" height="31" width="88"
 	     style="border: 0pt"/>
       </a>
-    </div>
+    </p>
+    
     <hr />
-    <div style="text-align:center">
+    <p style="text-align:center">
       <a href="http://sourceforge.net">
         <img src="http://sourceforge.net/sflogo.php?group_id=126716&amp;type=5"
              width="210" height="62" border="0" alt="SourceForge.net Logo" />
       </a>
-    </div>
+    </p>
   </body>
 </html>
