@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>WebSource : a generic application access to the web </title>
+  </head>
+  
+  <body>
+    <h1>WebSource : a generic application access to the web </h1>
+    <hr />
+    <h2>What is WebSource ?</h2>
+    <div>
+      WebSource is a perl module abstracting application access to
+      data available on the Web and accessible via a set of
+      dynamically managed web pages. This means posting a query via an
+      HTTP server, fetching the set of pages and extracting the
+      relevant pieces of information.
+    </div>
+    
+    <h2>How does it work ?</h2>
+    <div>
+      There are different elements of the process which are specific
+      to each source :
+      <ul>
+	<li>the parameters of the query and the access method to use</li>
+	<li>the part of a result page pointing to the next result page</li>
+	<li>the parts of the page containing the effective results</li>
+	<li>the structure of the results</li>
+      </ul>
+      WebSource works by taking a description of these elements and does
+      the rest. It takes as input such a description and a query to the
+      source (with the source specific parameters), sends the query to
+      the HTTP serveur, retrieves the first result page, extracts the
+      results and the link to the next result pages, fetches that other
+      page, extracts the new results and the new link,... until it
+      cannot find another link to a next page of results.
+    </div>
+    
+    <h2>Where can I get it ? </h2>
+    <div>
+      It will soon be made available on the sourceforge cvs.
+    </div>
+
+    <h2>How do I install the module ?</h2>
+    <div>
+      Get and decompress the archive, do a usal
+      <tt>perl Makefile.PL</tt>, <tt>make</tt>, <tt>make
+	install</tt>. There is no make test since I haven't added
+      tests yet.
+    </div>
+
+    <h2>How do I get it to work ?</h2>
+    The easiest way to get started is by typing the following example
+    perl script using the module allowing to query Google (this script
+  is available <a href="first.pl">here</a>):
+    <pre>
+#!/usr/bin/perl
+use WebSource;
+
+# Give a WebSource description URI
+my $wsd = "http://wwwsource.free.fr/desc/google.xml";
+
+# Build a WebSource instance
+my $ws = WebSource->new(wsd => $wsd);
+
+# Setup your query
+my $query = join("+",@ARGV);
+
+$ws->set_query(q => $query);
+# Note : the format of the query is source dependant (for Google the
+# only element we want to be user-defined is the actual google query "q"
+# element )
+
+# Retreive the results and print them out
+while(my $res = $ws->next_result()) {
+   print $res , "\n";
+}
+
+# Note : all of the results could have been fetched into an array by
+# doing
+#    @res = $ws->query(q => $query)
+# but this meant waiting for all the result pages being downloaded and
+# all the ressults extracted
+# set_query and next_result use a lazy method so a page is downloaded
+# and its results extracted only when needed
+    </pre>
+</div>
+
+  <h2>Where do I get more information ?</h2>
+  <div>
+      For more information you can consult the man pages of the
+      project. There are two packages : WebSource and WebSource::Engine
+      which give a bit more detailed information of themselves. You
+      can either consult the man pages locally.
+
+      You can also send an email my sourceforge email address habegger _at_
+users.sf.net.
+
+      For continuous information on the evolution of the project a
+sourceforge mailing list named websource-info is available.
+  </div>
+  <h2>Who initiated the project ?</h2>
+  <div>
+    Well I did. That mean Benjamin Habegger. I have just finished my Phd in
+    Computer Science at the University of Nantes and am currently working
+    with the Grappa research team. You can get more
+    information about me, my research and teaching on my home page :
+    <a href="http://www.grappa.univ-lille3.fr/~habegger/">
+      http://www.grappa.univ-lille3.fr/~habegger/
+    </a>
+  </div>
+
+  <h2>How can I contribute ?</h2>
+  <div>
+    You can contribute to this small project by suggesting ideas,
+    code, and new description files by writing me an email.
+  </div>
+
+    <hr />
+    <div>
+      <a href="http://validator.w3.org/check/referer">
+	<img
+	     src="http://www.w3.org/Icons/valid-xhtml10"
+	     alt="Valid XHTML 1.0!" height="31" width="88"
+	     style="border: 0pt"/>
+      </a>
+    </div>
+    <hr />
+    <div style="text-align:center">
+      <a href="http://sourceforge.net">
+        <img src="http://sourceforge.net/sflogo.php?group_id=126716&amp;type=5"
+             width="210" height="62" border="0" alt="SourceForge.net Logo" />
+      </a>
+    </div>
+  </body>
+</html>
