@@ -2,13 +2,19 @@
 <ws:source name="bonjour.fr"
   xmlns:ws="http://wwwsource.free.fr/ns/websource">
 
+  <ws:options>
+    <option name="key" shortcut="k" type="string" />
+  </ws:options>
+
   <ws:soap name="google-service" forward-to="parser">
     <parameters>
       <param name="service" value="http://api.google.com/GoogleSearch.wsdl" />
       <param name="method"  value="doGoogleSearch" />
       <param name="parameters" 
              value="key data start maxResults filter restrict safeSearch lr ie oe" />
-      <param name="key"        value="MYGOOLEKEY" />
+      <param name="key"        value="MYGOOLEKEY">
+        <ws:set-attribute name="value" value-of="key" />
+      </param>
       <param name="start"      value="0" />
       <param name="maxResults" value="10" />
       <param name="filter"     value="0"/>
