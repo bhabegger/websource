@@ -6,7 +6,11 @@
     <option name="year" shortcut="y" type="integer" />
   </ws:options>
 
-  <ws:query name="q" method="POST" forward-to="fetcher">
+  <ws:dummy name="dummy" forward-to="query">
+    <data></data>
+  </ws:dummy>
+
+  <ws:query name="query" method="POST" forward-to="fetcher">
     <base>http://web.archive.org/archive_request_ng</base>
     <parameters>
       <param type="hidden" name="collection" default="web"/>
