@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 <!--
-  $Revision: 1.4 $
+  $Revision: 1.5 $
   $Author: habegger $
 -->
 <!DOCTYPE html 
@@ -139,14 +139,18 @@ while(my $res = $ws->next_result()) {
   <h2>Where do I get more information ?</h2>
   <div>
       For more information you can consult the man pages of the
-      project. There are two packages : WebSource and WebSource::Engine
-      which give a bit more detailed information of themselves. You
-      can either consult the man pages locally.
-
-      You can also send an email my sourceforge email address habegger _at_ users.sf.net.
+      project. You can start from the WebSource man page. The each type of
+      operator is implemented as perl module which each have their man page.
+      For example, the fetch operator is implemented by the WebSource::Fetcher
+      module whose man page can be accessed via <tt>man WebSource::Fetcher</tt>.
 
       For continuous information on the evolution of the project a sourceforge mailing list
-      named websource-info is available.
+      named websource-info is available (see the websource amiling list page :
+      <a href="http://sourceforge.net/mail/?group_id=126716">
+        http://sourceforge.net/mail/?group_id=126716
+      </a>).
+
+      You can also send an email my sourceforge email address habegger _at_ users.sf.net.
   </div>
 
   <h2>Who initiated the project ?</h2>
@@ -168,7 +172,7 @@ while(my $res = $ws->next_result()) {
 
     <hr />
     <div>
-      Last date : $Date: 2005-01-02 18:02:02 $
+      Last date : $Date: 2005-01-02 18:10:18 $
     </div>
     <hr />
     <div>
