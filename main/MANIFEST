@@ -4,8 +4,6 @@ Makefile.PL
 README
 TODO
 bin/ws-getform
-bin/ws-links
-bin/ws-google
 bin/ws-query
 bin/ws-xsl
 bin/ws-xpath
@@ -24,7 +22,6 @@ WebSource/Extract/regexp.pm
 WebSource/Extract/xslt.pm
 WebSource/Extract/form.pm
 WebSource/Filter/script.pm
-WebSource/Filter/unique.pm
 WebSource/Filter/type.pm
 WebSource/Filter/distance.pm
 WebSource/Cache.pm
