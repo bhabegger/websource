@@ -7,6 +7,7 @@ bin/ws-getform
 bin/ws-query
 bin/ws-xsl
 bin/ws-xpath
+bin/ws-tidy
 WebSource.pm
 WebSource/Envelope.pm
 WebSource/Extract.pm
