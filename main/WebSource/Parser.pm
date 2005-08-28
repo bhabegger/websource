@@ -14,8 +14,8 @@ use HTML::TreeBuilder;
     my @naseq;
     # Clean up attributes
     foreach my $a (@$attrseq) {
-      if($a =~ m#[^\w-_]#) {
-        warn "Bad attribute $a detected and removed";
+      if($a =~ m#[^\w-_:]#) {
+        $self->{verbose} and warn "Bad attribute $a detected and removed";
       } else {
         push @naseq, ($a);
         $nattr{$a} = $attr->{$a};
@@ -28,7 +28,7 @@ use HTML::TreeBuilder;
     if(!$iscdata) {
       $origtext =~ /Sion/ and print "Text : $origtext\n";
       if($origtext =~ m/\0/) {
-        warn "Decected null char\n";
+        $self->{verbose} and warn "Decected null char\n";
         $origtext =~ s/\0//g;
       }
       if($origtext =~ m/\&\#[0-9]\;/) {
@@ -67,7 +67,7 @@ Create a new WebSource::Parser
 
 sub new {
   my $class = shift;
-  my $self = $class->SUPER::new(@_);
+  my $self = $class->SUPER::new(verbose => 1, @_);
   return $self;
 }
 
