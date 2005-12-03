@@ -73,7 +73,7 @@ sub handle {
     chomp($line);
     $self->log(1,"Read '",$line,"' from ",$self->{filename});
     return WebSource::Envelope->new (
-      type => "string"                                                                  "text/string" : "object/dom-node",
+      type => "string",
       data => $line,
     );
   } else {
