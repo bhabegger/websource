@@ -1,6 +1,7 @@
 package WebSource;
-our $REVSTR = '$Revision: 1.3 $';
-our $REVISION = substr($REVSTR,11,length($REVSTR)-11-2);
+our $REVSTR = '$Revision: 1.4 $';
+$REVSTR =~ m/\$Revision: 1.4 $/;
+our $REVISION = $1;
 our $VERSION='2.4.0';
 
 use strict;
