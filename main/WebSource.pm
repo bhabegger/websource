@@ -1,6 +1,6 @@
 package WebSource;
-our $REVSTR = '$Revision: 1.4 $';
-$REVSTR =~ m/\$Revision: 1.4 $/;
+our $REVSTR = '$Revision: 1.5 $';
+$REVSTR =~ m/Revision: ([^ ]+)/;
 our $REVISION = $1;
 our $VERSION='2.4.0';
 

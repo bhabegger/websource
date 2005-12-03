@@ -22,9 +22,9 @@ use sigtrap qw(die normal-signals);
 use strict;
 use warnings;
 
-my $REVSTR = '$Revision: 1.1 $';
-my $REVISION = substr($REVSTR,11,length($REVSTR)-11-2);
-
+my $REVSTR = '$Revision: 1.2 $';
+$REVSTR =~ m/Revision: ([^ ]+)/
+my $REVISION = $1;
 my $VERSION = '2.3';
 
 sub usage {
