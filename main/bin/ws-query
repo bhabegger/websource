@@ -22,8 +22,8 @@ use sigtrap qw(die normal-signals);
 use strict;
 use warnings;
 
-my $REVSTR = '$Revision: 1.2 $';
-$REVSTR =~ m/Revision: ([^ ]+)/
+my $REVSTR = '$Revision: 1.3 $';
+$REVSTR =~ m/Revision: ([^ ]+)/;
 my $REVISION = $1;
 my $VERSION = '2.3';
 
@@ -114,7 +114,7 @@ while(!$params{wsd} && $opt) {
 $ws = WebSource->new(%params);
 $ws or croak("No source description given");
 Getopt::Mixed::init($ws->option_spec);
-while(my ($opt,$val) = Getopt::Mixed::nextOption) {
+while(($opt,$val) = Getopt::Mixed::nextOption) {
   $ws->set_option($opt,$val);
 }
 

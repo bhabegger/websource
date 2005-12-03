@@ -1,6 +1,8 @@
 This is WebSource version 2.4
 -------------------------------------------------------------------
-
+- Load/Save network state to disk (in order to stop and restart network)
+- Use cleaner enveloppes (all XML/DOM ?)
+- File based data sharing
 - Convert WebSource 1 descriptions into WebSource 2 descriptions
 - Create more source descriptions
 - Create a WebSource::Error class to handle errors

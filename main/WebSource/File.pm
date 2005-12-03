@@ -4,6 +4,7 @@ use strict;
 use WebSource::Module;
 use Carp;
 use DB_File;
+use IO::Handle;
 
 our @ISA = ('WebSource::Module');
 
@@ -38,26 +39,6 @@ The C<filename> attribut allows to set which file the items are read from.
 
 Create a new File module;
 
-=cut
-
-sub _init_ {
-  my $self = shift;
-  $self->SUPER::_init_;
-
-  my $wsd = $self->{wsdnode};
-  if($wsd) {
-    $self->{filename} = $wsd->getAttribute("filename");
-  }
-  
-  if ($self->{filename}) { 
-    open($self->{fh},"<",$self->{filename});
-  } else {
-    $self->{filename} = "STDIN";
-    $self-{fh} = *STDIN{IO};
-  }
-  $self->log(1,"Reading input data from ", $self->{filename}); 
-}
-
 =item B<< $file->handle($env); >>
 
 Reads one line from the file and gives it as output;
@@ -67,18 +48,23 @@ Reads one line from the file and gives it as output;
 sub handle {
   my $self = shift;
   my $env = shift;
-
-  my $fh = $self->{fh};
-  if(my $line = <$fh>) {
-    chomp($line);
-    $self->log(1,"Read '",$line,"' from ",$self->{filename});
-    return WebSource::Envelope->new (
-      type => "string",
-      data => $line,
-    );
+  
+  my $file = $env->data;
+  my $io = IO::Handle->new();
+  if($file eq 'stdin') {
+    $io->fdopen(fileno(STDIN),"r");
   } else {
-    return undef;
+    $io->open($file,"r");
   }
+
+  map {
+    chomp;
+    $self->log(1,"Read '",$_,"' from ",$file);
+    WebSource::Envelope->new (
+      type => "text/string",
+      data => $_,
+    );
+  } <$io>;  
 }
 
 =back 2
