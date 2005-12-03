@@ -1,5 +1,5 @@
 package WebSource;
-our $REVSTR = '$Revision: 1.2 $';
+our $REVSTR = '$Revision: 1.3 $';
 our $REVISION = substr($REVSTR,11,length($REVSTR)-11-2);
 our $VERSION='2.4.0';
 
@@ -26,6 +26,7 @@ our %ModClass = (
  database  => 'WebSource::DB',
  map       => 'WebSource::Map',
  dummy     => 'WebSource::Module',
+ file      => 'WebSource::File',
 );
 
 

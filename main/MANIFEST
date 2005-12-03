@@ -27,6 +27,7 @@ WebSource/Filter/type.pm
 WebSource/Filter/distance.pm
 WebSource/Filter/tests.pm
 WebSource/Cache.pm
+WebSource/File.pm
 WebSource/XMLParser.pm
 WebSource/Soap.pm
 WebSource/Map.pm
