@@ -97,6 +97,19 @@ sub dataString {
   }
 }
 
+sub dataXML {
+  my $self = shift;
+  my $t = $self->type;
+  my $d = $self->data;
+  if($t eq "object/dom-node") {
+    $d->toString(1);
+  } elsif($t =~ m{^object/} && $d->can("as_string"))  {
+    "<content>" . $d->as_string . "</content>";
+  } else {
+    "<data>" . $d . "</data>";
+  }
+}
+
 sub dataAsURI {
   my $self = shift;
   my $t = $self->type;

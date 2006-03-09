@@ -1,5 +1,6 @@
 This is WebSource version 2.4
 -------------------------------------------------------------------
+- Build a descriptiong on the fly in the command line
 - Load/Save network state to disk (in order to stop and restart network)
 - Use cleaner enveloppes (all XML/DOM ?)
 - File based data sharing

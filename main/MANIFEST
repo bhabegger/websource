@@ -34,3 +34,4 @@ WebSource/Map.pm
 WebSource/DB.pm
 t/001-main.t
 t/101-filters.t
+META.yml                                 Module meta-data (added by MakeMaker)

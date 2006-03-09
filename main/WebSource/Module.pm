@@ -140,6 +140,7 @@ sub push {
   foreach my $env (@_) {
     UNIVERSAL::isa($env,'WebSource::Envelope') or croak("Didn't push in an envelope");
     $self->log(3,"Handling $env : ", $env->as_string);
+    $self->log(6,"Content $env : ",$env->dataXML);
     my @res = $self->handle($env);
     map { defined($_) or croak("Undefined value generated") } @res;
     $self->log(3,"Obtained ",$#res+1," results");

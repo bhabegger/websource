@@ -77,6 +77,10 @@ sub keep {
       $match = (scalar(@res) > 0);
       $self->log(5,"Existence with '$select' resulted in ",
                    scalar(@res)," nodes ($match)");
+    } elsif($type eq "xpath") {
+      my $select = $n->getAttribute("select");
+      $match = $data->find("boolean(".$n->getAttribute("select").")")->value();
+      $self->log(5,"Xpath test with '$select' resulted in $match");
     } else {
       my $str = $data->findvalue($n->getAttribute("select"));
       my $pat  = $n->getAttribute("match");
