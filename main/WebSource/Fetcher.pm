@@ -45,7 +45,8 @@ sub _init_ {
     LWP::UserAgent->new(
 			agent => "WebSource/1.0",
 			keep_alive => 1,
-			timeout => 20
+			timeout => 20,
+                        env_proxy => 1,
 		       );
   if($self->{cookies}) {
     $self->log(5,"Got cookie jar : ",$self->{cookies});
