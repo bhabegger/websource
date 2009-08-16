@@ -40,6 +40,7 @@ sub _init_ {
   my $self = shift;
   $self->SUPER::_init_;
   $self->{parser}         or $self->{parser} = WebSource::Parser->new;
+  $self->{parser}->recover(1);
   return $self;
 }
 
@@ -62,8 +63,9 @@ sub handle {
   my $base = $env->{baseuri};
   my $doc = eval {
     if ($env->type eq "text/html") {
-      my $str = $env->{encoding} ? 
-        Encode::encode("utf-8",Encode::decode($env->{encoding},$ct)) : $ct;
+      my $srcenc = $env->{encoding};
+      my $str = $srcenc ? 
+        Encode::encode("utf-8",Encode::decode($env->{encoding},$ct,1)) : $ct;
       $self->{parser}->parse_html_string($str);
     } else {
       $self->{parser}->parse_string($ct);

@@ -1,5 +1,5 @@
 package WebSource;
-our $REVSTR = '$Revision: 1.6 $';
+our $REVSTR = '$Revision: 1.7 $';
 $REVSTR =~ m/Revision: ([^ ]+)/;
 our $REVISION = $1;
 our $VERSION='2.4.1';
@@ -342,8 +342,14 @@ sub option_spec {
   my $self = shift;
   my $doc = $self->{wsddoc};
   my @spec;
-  foreach my $onode ($doc->findnodes('/ws:source/ws:options/option')) {
-    my $name = $onode->getAttribute("name");
+  foreach my $onode ($doc->findnodes('/ws:source/ws:options/*')) {
+    my $name = "";
+    if($onode->nodeName() eq "option") {
+      warn("Using option element under ws:options is deprecated. Directly use the options name as element name.");
+      $name = $onode->getAttribute("name");
+    } else {
+      $name = $onode->nodeName();    
+    }
     my $shortcut = $onode->getAttribute("shortcut");
     my $type = $onode->getAttribute("type");
     if($name) {
@@ -376,7 +382,21 @@ Sets source specific option $opt to value $val
 sub set_option {
   my ($self,$opt,$val) = @_;
   $self->log(2,"Setting option $opt to value $val");
-  $self->{"opt_$opt"} = $val;
+  if(my @optnode = $self->{wsddoc}->findnodes("//ws:options")) {
+    if (my @nodes = $optnode[0]->getChildrenByTagName($opt)) {
+      if($nodes[0]->hasChildNodes()) {
+        $nodes[0]->firstChild()->setData($val);
+      } else {
+        $nodes[0]->appendText($val);
+      }
+    } else {
+      my $nn = $self->{wsddoc}->createElement($opt);
+      $nn->appendText($val);
+      $optnode[0]->appendChild($nn);
+    }
+  } else {
+    croak("Setting option while ws:options node is absent");
+  }
 }
 
 =item B<< $source->apply_options >>
@@ -390,15 +410,16 @@ to the parent node. The ws:attribute node is then removed.
 sub apply_options {
   my ($self) = @_;
   my $doc = $self->{wsddoc};
+  my @optnode = $doc->findnodes("//ws:options");
   foreach my $sa ($doc->findnodes("//ws:set-attribute")) {
     my $p = $sa->parentNode;
     my $aname = $sa->getAttribute("name");
-    my $oname = $sa->getAttribute("value-of");
-    my $oval = $self->{"opt_$oname"};
+    my $oexpr = $sa->getAttribute("value-of");
+    my $oval = $optnode[0]->findvalue($oexpr);
     if($oval) {
       $p->setAttribute($aname,$oval);
     } else {
-      $self->log(1,"Warning : Option $oname has no value");
+      $self->log(1,"Warning : Expr '$oexpr' has no value");
     }
     $p->removeChild($sa);
   }

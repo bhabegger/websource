@@ -6,11 +6,11 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
   <ws:fetch name="fetch-list" forward-to="extract-list" type="xml">
-    <data>http://www.cia.gov/cia/publications/factbook/countrylisting.html</data>
+    <data>https://www.cia.gov/library/publications/the-world-factbook/docs/flagsoftheworld.html</data>
   </ws:fetch>
 
-  <ws:extract name="extract-list" forward-to="fetch-item">
-    <path>//li/a/@href</path>
+  <ws:extract name="extract-list" forward-to="fetch-item" type="">
+    <path>//a[img[@alt="View Country Description"]]/@href</path>
   </ws:extract>
 
   <ws:fetch name="fetch-item" forward-to="extract-item" type="xml" />
