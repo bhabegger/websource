@@ -5,8 +5,14 @@ use WebSource::Parser;
 use WebSource::Module;
 use Carp;
 use Encode;
+use Encode::Guess;
 
 our @ISA = ('WebSource::Module');
+
+my %html_options = (
+  recover => 1,
+  encoding => 'UTF-8'
+);
 
 =head1 NAME
 
@@ -40,7 +46,6 @@ sub _init_ {
   my $self = shift;
   $self->SUPER::_init_;
   $self->{parser}         or $self->{parser} = WebSource::Parser->new;
-  $self->{parser}->recover(1);
   return $self;
 }
 
@@ -62,11 +67,16 @@ sub handle {
   my $ct = $env->data;
   my $base = $env->{baseuri};
   my $doc = eval {
+    $self->log(5,"Found doctype of '". $env->type . "'");
     if ($env->type eq "text/html") {
       my $srcenc = $env->{encoding};
-      my $str = $srcenc ? 
-        Encode::encode("utf-8",Encode::decode($env->{encoding},$ct,1)) : $ct;
-      $self->{parser}->parse_html_string($str);
+      $self->log(5,"Found encoding '$srcenc', converting to UTF-8");
+      if($srcenc eq '') {
+        $srcenc = 'Guess';
+        $self->log(5,"No encoding found so guessing and converting to UTF-8");
+      }
+      my $str = Encode::decode($srcenc,$ct,1);
+      $self->{parser}->parse_html_string($str,\%html_options);
     } else {
       $self->{parser}->parse_string($ct);
     }

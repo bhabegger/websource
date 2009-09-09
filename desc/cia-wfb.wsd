@@ -10,11 +10,11 @@
   </ws:fetch>
 
   <ws:extract name="extract-list" forward-to="fetch-item" type="">
-    <path>//a[img[@alt="View Country Description"]]/@href</path>
+    <path>//html:a[html:img[@alt="View Country Description"]]/@href</path>
   </ws:extract>
 
   <ws:fetch name="fetch-item" forward-to="extract-item" type="xml" />
-  <ws:extract name="extract-item" type="xslt" forward-to="map">
+  <ws:extract name="extract-item" type="xslt" forward-to="format">
     <xi:include href="cia-wfb.xsl" />
   </ws:extract>
 

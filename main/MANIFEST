@@ -18,6 +18,7 @@ WebSource/Fetcher/xml.pm
 WebSource/Logger.pm
 WebSource/Module.pm
 WebSource/Parser.pm
+WebSource/Queue.pm
 WebSource/Query.pm
 WebSource/Extract/regexp.pm
 WebSource/Extract/xslt.pm

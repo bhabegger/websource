@@ -5,6 +5,7 @@ use Carp;
 use URI;
 use HTTP::Request::Common;
 use XML::LibXML::Common qw(:w3c);
+use XML::LibXML;
 
 =head1 NAME
 
@@ -71,6 +72,31 @@ sub new {
   my $self = bless \%params, $class;
 	$self->{type} or croak("No type given");
 	$knowntypes{$self->{type}} or carp("Type ",$self->{type}," is not known");
+  return $self;
+}
+
+sub new_from_file {
+  my ($class,$filename) = @_;
+  my $parser = XML::LibXML->new();
+  my $doc = $parser->parse_file($filename);
+  my $envRoot = $doc->documentElement();
+  my %params;
+  foreach my $attr ($envRoot->attributes()) {
+    $params{$attr->nodeName} = $attr->nodeValue;
+  }
+  my $self = bless \%params, $class;
+  $self->{type} or croak("No type given");
+  $knowntypes{$self->{type}} or carp("Type ",$self->{type}," is not known");
+  if($self->{type} eq 'object/dom-node') {
+    my @content = $envRoot->findnodes('child::*');
+    if(@content) {
+      $self->{data} = $content[0];
+    } else {
+      croak("No content for dom-node");
+    }
+  } else {
+    $self->{data} = $envRoot->findvalue('text()');
+  }
   return $self;
 }
 
@@ -176,6 +202,36 @@ sub as_string {
      $l > 70 and $str = substr($str,0,35) . " ... " . substr($str,$l-35,35);
      $_ .  " => " . $str
   } keys(%$self)) . "]]";
+}
+
+sub to_file {
+  my ($self,$filename) = @_;
+  my $parser = new XML::LibXML;
+  my $envDoc = $parser->parse_string('<?xml version="1.0" ?><ws:envelope xmlns:ws="http://wwwsource.free.fr/ns/websource" />');
+  my $envRoot = $envDoc->documentElement(); 
+  foreach my $key (keys(%$self)) {
+     if($key ne 'data') {
+       my $value = $self->{$key};
+       $envRoot->setAttribute($key,$value);
+     }
+  }
+
+  my $t = $self->type;
+  my $d = $self->data;
+  if($t eq "object/dom-node") {
+    if($d->nodeType == XML_DOCUMENT_NODE) {
+      $envRoot->appendChild($d->documentElement);    
+    } else {
+      $envRoot->appendChild($d);
+    }
+  } else {
+    $envRoot->appendChild($envDoc->create($d));
+  }
+  
+  
+  open(my $fh,">",$filename);
+  print $fh $envDoc->toString;
+  close($fh);
 }
 
 =head1 SEE ALSO

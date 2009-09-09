@@ -1,7 +1,9 @@
 package WebSource::Extract;
 use strict;
 use WebSource::Parser;
+use WebSource::Queue;
 use XML::LibXSLT;
+use XML::LibXML::XPathContext;
 use Carp;
 
 our @ISA = ('WebSource::Module');
@@ -65,20 +67,30 @@ sub _init_ {
     $self->{limit} = $wsd->getAttribute("limit");
   } 
   $self->{xpath} or croak "No xpath given";
+  
+#  $self->{queue} = new WebSource::Queue(directory => '/tmp/extract-queue/');
   return $self;
 }
 
 sub handle {
   my $self = shift;
   my $env = shift;
+#  my $envMem = shift;
+#  $self->{queue}->enqueue($envMem);
+#  my $env =   $self->{queue}->dequeue();
+  
   $self->log(5,"Got document ",$env->{baseuri});
   if(!($env->type eq "object/dom-node")) {
     $self->log(1,"Oooops we haven't got an object/dom-node");
     return ();
   }
-  #$self->log(6,"Extracting from :\n",$env->data->toString(1));
+  $self->log(6,"Extracting from :\n",$env->data->toString(1));
   $self->log(5,"Extracting with ",$self->{xpath});
-  my @nodes = $env->data->findnodes($self->{xpath});
+  
+  my $xpc = XML::LibXML::XPathContext->new($env->data);
+  $xpc->registerNs('html','http://www.w3.org/1999/xhtml');
+     
+  my @nodes = $xpc->findnodes($self->{xpath});
   if($self->{format} eq "string") {
     @nodes = map { $_->textContent; } @nodes;
   }
