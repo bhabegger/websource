@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE ws:source SYSTEM "websource.dtd">
+<ws:source name="apec.fr" xmlns:ws="http://wwwsource.free.fr/ns/websource">
+  <ws:options>
+    <option name="dept" shortcut="d" type="integer" />
+  </ws:options>
+
+  <ws:fetch name="init" forward-to="q">
+    <data>http://cadres.apec.fr/Accueil/ApecIndexAccueil.jsp</data>
+  </ws:fetch>
+
+  <ws:query name="q" method="GET" forward-to="fetcher">
+    <base>http://cadres.apec.fr/core/common/site/RechercheGlobale/recherche-directe-globale.jsp</base>
+    <parameters>
+      <param type="text" name="keywords" default=""/>
+    </parameters>
+  </ws:query>
+
+  <ws:fetch name="fetcher" forward-to="parser" />
+  <ws:xmlparser name="parser" forward-to="select" />
+
+  <ws:extract name="select" forward-to="format">
+    <path>//div[@class="boxContent offre"]</path>
+  </ws:extract>
+
+  <ws:extract type="xslt" name="format" forward-to="out"
+              xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:stylesheet version="1.0">
+      <xsl:output method="xml" indent="yes" />
+      <xsl:template match="div">
+        <oml:object
+          xmlns:oml="http://objectml.org/ns/200905/ObjectML"
+          xmlns:cat="http://objectml.org/ns/200905/Categories"
+          oml:datasource="http://www.apec.fr/"
+          oml:category="cat:jobs">
+            <xsl:attribute name="oml:id">
+            	<xsl:value-of select=".//a/@href" />
+            </xsl:attribute>
+            <xsl:copy-of select="." />
+         </oml:object>
+      </xsl:template>
+    </xsl:stylesheet>
+  </ws:extract> 
+
+  <ws:format name="out" format="xml" />
+</ws:source>
