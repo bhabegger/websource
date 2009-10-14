@@ -72,6 +72,7 @@ sub handle {
   
   foreach my $key (keys(%$env)) {
     my $val = $env->{$key};
+    $val =~  s/'/''/g;
     $query =~ s/\$$key/$val/g;
   }
   $self->log(3,"Executing...\n",$query,"\n");

@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 <!DOCTYPE ws:source SYSTEM "websource.dtd">
 <ws:source name="apec.fr" xmlns:ws="http://wwwsource.free.fr/ns/websource">
-  <ws:options>
-    <option name="dept" shortcut="d" type="integer" />
-  </ws:options>
-
-  <ws:fetch name="init" forward-to="q">
+  <ws:fetch name="init" forward-to="init-parser">
     <data>http://cadres.apec.fr/Accueil/ApecIndexAccueil.jsp</data>
   </ws:fetch>
 
-  <ws:query name="q" method="GET" forward-to="fetcher">
-    <base>http://cadres.apec.fr/core/common/site/RechercheGlobale/recherche-directe-globale.jsp</base>
-    <parameters>
-      <param type="text" name="keywords" default=""/>
-    </parameters>
-  </ws:query>
+  <ws:xmlparser name="init-parser" forward-to="link" />
 
-  <ws:fetch name="fetcher" forward-to="parser" />
-  <ws:xmlparser name="parser" forward-to="select" />
-
-  <ws:extract name="select" forward-to="format">
-    <path>//div[@class="boxContent offre"]</path>
+  <ws:extract name="link" forward-to="fetcher">
+    <path>//a[contains(.,"offres d'emploi cadres")]/@href</path>
   </ws:extract>
 
-  <ws:extract type="xslt" name="format" forward-to="out"
+  <ws:fetch name="fetcher" forward-to="cache" />
+
+  <ws:cache name="cache" forward-to="parser"
+            directory="/tmp" template="apec-init-XXXXX.html" />
+
+  <ws:xmlparser name="parser" forward-to="select next" />
+
+  <ws:extract name="next" forward-to="fetcher">
+    <path>//a[contains(.,"Suivante")]/@href</path>
+  </ws:extract>
+
+  <ws:extract name="select" forward-to="format">
+    <path>//div[contains(@class,"offre")]</path>
+  </ws:extract>
+
+  <ws:extract type="xslt" name="format" forward-to="map"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:stylesheet version="1.0">
       <xsl:output method="xml" indent="yes" />
@@ -40,7 +43,28 @@
          </oml:object>
       </xsl:template>
     </xsl:stylesheet>
-  </ws:extract> 
+  </ws:extract>
+
+  <ws:map name="map" forward-to="db">
+    <map-to name="id" select="/oml:object/@oml:id" />
+    <map-to mode="xml" name="content" select="/oml:object/node()" />
+  </ws:map>
+
+  <ws:database name="db" forward-to="out">
+    <parameters>
+      <param name="db" value="objectml_store" />
+      <param name="user" value="objectml" />
+      <param name="pass" value="objectml" />
+    </parameters>
+    <query>
+      INSERT INTO oml_object(id,category,datasource,description)
+      (SELECT '$id', cat.id, ds.id, '$content'
+      FROM oml_category cat, oml_datasource ds
+      WHERE cat.namespace = 'http://objectml.org/ns/200905/Categories'
+        AND cat.name = 'jobs'
+        AND ds.uri = 'http://www.apec.fr')
+    </query>
+  </ws:database>
 
   <ws:format name="out" format="xml" />
 </ws:source>

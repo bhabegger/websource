@@ -47,7 +47,16 @@ sub handle {
   $self->log(3,"Found ",scalar(@nodes)," map-to nodes");
   while(!$match && @nodes) {
     my $n = shift @nodes;
-    my $value = $data->findvalue($n->getAttribute("select"));
+    my $mode = $n->getAttribute("mode");
+    my $value;
+    if($mode eq "xml") {
+        my @nodes = $data->findnodes($n->getAttribute("select"));
+        foreach my $node (@nodes) {
+          $value .= $node->toString();
+        }
+    } else {
+        $value = $data->findvalue($n->getAttribute("select"));
+    }
     my $name = $n->getAttribute("name"); 
     $self->log(3,"Setting meta-name ",$name," to ", $value);
     $env->{$name} = $value;
