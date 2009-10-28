@@ -125,10 +125,18 @@ sub dataString {
 
 sub dataXML {
   my $self = shift;
+  my %params = @_;
   my $t = $self->type;
   my $d = $self->data;
   if($t eq "object/dom-node") {
-    $d->toString(1);
+  	if($params{wantdoc} && $d->nodeType ne "#document") {
+  		my $doc = XML::LibXML::Document->createDocument( "1.0", "utf-8");
+  		my $clone = $d->cloneNode(1);
+  		$doc->setDocumentElement($clone);
+  		$doc->toString(1);
+  	} else {
+	    $d->toString(1);
+  	}
   } elsif($t =~ m{^object/} && $d->can("as_string"))  {
     "<content>" . $d->as_string . "</content>";
   } else {

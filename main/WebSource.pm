@@ -1,5 +1,5 @@
 package WebSource;
-our $REVSTR = '$Revision: 1.7 $';
+our $REVSTR = '$Revision: 1.8 $';
 $REVSTR =~ m/Revision: ([^ ]+)/;
 our $REVISION = $1;
 our $VERSION='2.4.1';
@@ -28,6 +28,7 @@ our %ModClass = (
  map       => 'WebSource::Map',
  dummy     => 'WebSource::Module',
  file      => 'WebSource::File',
+ xmlsender => 'WebSource::XMLSender',
 );
 
 

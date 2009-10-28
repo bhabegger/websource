@@ -11,5 +11,5 @@ WriteMakefile(
     'INSTALLSCRIPT'     => '/usr/local/bin',
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM => 'WebSource.pm', # retrieve abstract from module
-       AUTHOR     => 'Benjamin Habegger <habegger@irin.univ-nantes.fr>') : ()),
+       AUTHOR     => 'Benjamin Habegger <b@habegger.fr>') : ()),
 );

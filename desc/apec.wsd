@@ -11,11 +11,11 @@
     <path>//a[contains(.,"offres d'emploi cadres")]/@href</path>
   </ws:extract>
 
-  <ws:fetch name="fetcher" forward-to="cache" />
+  <ws:fetch name="fetcher" forward-to="parser" />
 
-  <ws:cache name="cache" forward-to="parser"
+<!--   <ws:cache name="cache" forward-to="parser"
             directory="/tmp" template="apec-init-XXXXX.html" />
-
+ -->
   <ws:xmlparser name="parser" forward-to="select next" />
 
   <ws:extract name="next" forward-to="fetcher">
@@ -39,6 +39,9 @@
             <xsl:attribute name="oml:id">
             	<xsl:value-of select=".//a/@href" />
             </xsl:attribute>
+            <xsl:attribute name="oml:name">
+            	<xsl:value-of select="normalize-space(.//a)" />
+            </xsl:attribute>
             <xsl:copy-of select="." />
          </oml:object>
       </xsl:template>
@@ -47,6 +50,7 @@
 
   <ws:map name="map" forward-to="db">
     <map-to name="id" select="/oml:object/@oml:id" />
+    <map-to name="name" select="/oml:object/@oml:name" />
     <map-to mode="xml" name="content" select="/oml:object/node()" />
   </ws:map>
 
@@ -57,12 +61,12 @@
       <param name="pass" value="objectml" />
     </parameters>
     <query>
-      INSERT INTO oml_object(id,category,datasource,description)
-      (SELECT '$id', cat.id, ds.id, '$content'
+      INSERT INTO oml_object(uri,name,category,datasource,description)
+      (SELECT concat('http://www.apec.fr/','$id'), '$name', cat.id, ds.id, '$content'
       FROM oml_category cat, oml_datasource ds
-      WHERE cat.namespace = 'http://objectml.org/ns/200905/Categories'
+      WHERE cat.namespace = 'http://objectml.org/ns/200905/Category'
         AND cat.name = 'jobs'
-        AND ds.uri = 'http://www.apec.fr')
+        AND ds.uri = 'http://www.apec.fr/')
     </query>
   </ws:database>
 

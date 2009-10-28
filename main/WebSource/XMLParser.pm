@@ -1,7 +1,7 @@
 package WebSource::XMLParser;
 use strict;
 use LWP::UserAgent;
-use WebSource::Parser;
+# use WebSource::Parser;
 use WebSource::Module;
 use Carp;
 use Encode;
@@ -45,7 +45,7 @@ Create a new Fetcher;
 sub _init_ {
   my $self = shift;
   $self->SUPER::_init_;
-  $self->{parser}         or $self->{parser} = WebSource::Parser->new;
+  $self->{parser}         or $self->{parser} = XML::LibXML->new;
   return $self;
 }
 
@@ -75,8 +75,12 @@ sub handle {
         $srcenc = 'Guess';
         $self->log(5,"No encoding found so guessing and converting to UTF-8");
       }
-      my $str = Encode::decode($srcenc,$ct,1);
-      $self->{parser}->parse_html_string($str,\%html_options);
+      if($srcenc ne 'Guess') {
+	      my $str = Encode::decode($srcenc,$ct,1);
+	      $self->{parser}->parse_html_string($str,\%html_options);
+      } else {
+	      $self->{parser}->parse_html_string($ct,\%html_options);      	
+      }
     } else {
       $self->{parser}->parse_string($ct);
     }
