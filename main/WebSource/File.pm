@@ -3,7 +3,7 @@ package WebSource::File;
 use strict;
 use WebSource::Module;
 use Carp;
-use DB_File;
+#use DB_File;
 use IO::Handle;
 
 our @ISA = ('WebSource::Module');
@@ -45,28 +45,51 @@ Reads one line from the file and gives it as output;
 
 =cut
 
+sub _init_ {
+  my $self = shift;
+  $self->SUPER::_init_;
+  my $wsd = $self->{wsdnode};
+  if($wsd && $wsd->hasAttribute("pattern")) {
+    my $pattern = $wsd->getAttribute("pattern");
+    $self->log(1,"Found file pattern <$pattern>");
+    foreach my $filename (glob($pattern)) {
+    	if( -f $filename) {
+    		$self->log(1,"Adding <$filename> from pattern <$pattern>");
+    		$self->push(WebSource::Envelope->new(
+    			type => "text/string",
+    			data => $filename
+			));
+    	}
+    }
+  }
+  return $self;
+}
+
 sub handle {
   my $self = shift;
   my $env = shift;
   
   my $file = $env->data;
-  my $io = IO::Handle->new();
+  my $io;
   if($file eq 'stdin') {
+  	$io = IO::Handle->new();
     $io->fdopen(fileno(STDIN),"r");
   } else {
-    $io->open($file,"r");
+  	$io = IO::File->new($file,"r");
   }
 
-  map {
-    chomp;
-    $self->log(1,"Read '",$_,"' from ",$file);
-    WebSource::Envelope->new (
-      type => "text/string",
-      data => $_,
-    );
-  } <$io>;  
-}
+  my $data = "";
+  while(my $line = <$io>) {
+  	$data .= $line;
+  }
+  $io->close();
 
+  return WebSource::Envelope->new (
+  	type => "text/html",
+    data => $data,
+  );
+}
+    
 =back 2
 
 =head1 SEE ALSO
