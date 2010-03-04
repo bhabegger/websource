@@ -69,18 +69,7 @@ sub handle {
   my $doc = eval {
     $self->log(5,"Found doctype of '". $env->type . "'");
     if ($env->type eq "text/html") {
-      my $srcenc = $env->{encoding};
-      $self->log(5,"Found encoding '$srcenc', converting to UTF-8");
-      if($srcenc eq '') {
-        $srcenc = 'Guess';
-        $self->log(5,"No encoding found so guessing and converting to UTF-8");
-      }
-      if($srcenc ne 'Guess') {
-	      my $str = Encode::decode($srcenc,$ct,1);
-	      $self->{parser}->parse_html_string($str,\%html_options);
-      } else {
-	      $self->{parser}->parse_html_string($ct,\%html_options);      	
-      }
+      $self->{parser}->parse_html_string($ct,\%html_options);
     } else {
       $self->{parser}->parse_string($ct);
     }

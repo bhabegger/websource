@@ -128,7 +128,9 @@ sub handle {
     $meta{encoding} = $response->content_encoding;
     $meta{type} = $response->content_type;
     $meta{baseuri} = $base;
-    $meta{data}    = $response->content;
+    $meta{data}    = $response->decoded_content;
+    $self->log(5,"Content-Type: ".$meta{type});
+    $self->log(5,"Content-Encoding: ".$meta{encoding});
     return WebSource::Envelope->new(%meta);
   } else {
     if ($response->{request}) {

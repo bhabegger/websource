@@ -1,5 +1,5 @@
 package WebSource;
-our $REVSTR = '$Revision: 1.8 $';
+our $REVSTR = '$Revision: 1.9 $';
 $REVSTR =~ m/Revision: ([^ ]+)/;
 our $REVISION = $1;
 our $VERSION='2.4.1';
@@ -416,13 +416,17 @@ sub apply_options {
     my $p = $sa->parentNode;
     my $aname = $sa->getAttribute("name");
     my $oexpr = $sa->getAttribute("value-of");
-    my $oval = $optnode[0]->findvalue($oexpr);
-    if($oval) {
-      $p->setAttribute($aname,$oval);
+    if($oexpr eq "") {
+      $self->log(1,"Warning : Empty value-of attribute on ws:set-attribute");
     } else {
-      $self->log(1,"Warning : Expr '$oexpr' has no value");
+      my $oval = $optnode[0]->findvalue($oexpr);
+      if($oval) {
+        $p->setAttribute($aname,$oval);
+      } else {
+        $self->log(1,"Warning : Expr '$oexpr' has no value");
+      }
+      $p->removeChild($sa);
     }
-    $p->removeChild($sa);
   }
   $self->log(6,"After applying options...\n", $doc->toString(1));
 }
