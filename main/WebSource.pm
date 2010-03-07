@@ -1,5 +1,5 @@
 package WebSource;
-our $REVSTR = '$Revision: 1.9 $';
+our $REVSTR = '$Revision: 1.10 $';
 $REVSTR =~ m/Revision: ([^ ]+)/;
 our $REVISION = $1;
 our $VERSION='2.4.1';
@@ -365,7 +365,7 @@ sub option_spec {
       if($shortcut) {
         $str .= " " . $shortcut . ">" . $name; 
       }
-      push(@spec,($str));
+      CORE::push(@spec,($str));
       $self->log(3,"generated option spec '$str'\n");
     } else {
       $self->log(1,"unamed option detected.");

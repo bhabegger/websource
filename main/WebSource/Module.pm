@@ -186,12 +186,12 @@ sub consumers {
 
 sub _producers {
   my $self = shift;
-  push @{$self->{producers}}, @_;
+  CORE::push @{$self->{producers}}, @_;
 }
 
 sub _consumers {
   my $self = shift;
-  push @{$self->{consumers}}, @_;
+  CORE::push @{$self->{consumers}}, @_;
 }
 
 =item C<< $self->produce >>
