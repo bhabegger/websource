@@ -1,8 +1,8 @@
 package WebSource;
-our $REVSTR = '$Revision: 1.10 $';
+our $REVSTR = '$Revision: 1.11 $';
 $REVSTR =~ m/Revision: ([^ ]+)/;
 our $REVISION = $1;
-our $VERSION='2.4.1';
+our $VERSION='2.4.2';
 
 use strict;
 use Carp;
@@ -122,6 +122,7 @@ sub new {
                         env_proxy => 1,
 		       );
   $param{cookies}        or $param{cookies} = HTTP::Cookies->new;
+  $param{useragent}->cookie_jar($param{cookies});
   $param{maxreqinterval} or $param{maxreqinterval} = 3;
   $param{maxtries}       or $param{maxtries} = 3;
   $param{parser}         or $param{parser} = WebSource::Parser->new;

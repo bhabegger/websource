@@ -46,7 +46,7 @@ sub _init_ {
 			agent => "WebSource/1.0",
 			keep_alive => 1,
 			timeout => 20,
-                        env_proxy => 1,
+                        env_proxy => 0,
 		       );
   if($self->{cookies}) {
     $self->log(5,"Got cookie jar : ",$self->{cookies});
@@ -98,7 +98,7 @@ sub handle {
     return ();
   } 
   $self->log(5,"Handling request \n",$request->as_string);
-  $self->{cookies}->add_cookie_header($request);
+#  $self->{cookies}->add_cookie_header($request);
   $self->log(3, "Posting request\n",
     "-------------------\n",
     $request->as_string,
