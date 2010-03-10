@@ -69,10 +69,12 @@ and sends it to the url configured in the source description file
 sub handle {
   my $self = shift;
   my $data = shift;
+  my $headers = HTTP::Headers->new(Content_Type => "text/xml");
+  $headers->content_encoding('utf-8');
   my $request = HTTP::Request->new(
   	$self->{method},
   	$self->{url},
-    HTTP::Headers->new(Content_Type => "text/xml"),
+  	$headers,
   	$data->dataXML(wantdoc => 1)
   );
 

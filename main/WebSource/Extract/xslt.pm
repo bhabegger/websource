@@ -3,6 +3,8 @@ use strict;
 use WebSource::Parser;
 use XML::LibXSLT;
 use Carp;
+use Date::Language;
+use Date::Format;
 
 our @ISA = ('WebSource::Module');
 
@@ -44,7 +46,8 @@ sub new {
       my $wsdoc = $wsd->ownerDocument;
       my $xsltdoc = XML::LibXML::Document->new($wsdoc->version,$wsdoc->encoding);
       $xsltdoc->setDocumentElement($stylesheet[0]->cloneNode(1));
-      my $xslt = XML::LibXSLT->new();
+      my $xslt = XML::LibXSLT->new();	
+      $xslt->register_function('http://wwwsource.free.fr/ns/websource/xslt-ext','reformat-date','WebSource::Extract::xslt::reformatDate');
       $self->{xsl} = $xslt->parse_stylesheet($xsltdoc);
       $self->{format} = $wsd->getAttribute("format");
     } else {
@@ -63,7 +66,7 @@ sub handle {
   my $data = $env->data;
   if(!$data->isa("XML::LibXML::Document")) {
     $self->log(5,"Creating document from DOM node");
-    my $doc = XML::LibXML::Document->new("1.0","iso-8859-1");
+    my $doc = XML::LibXML::Document->new("1.0","UTF-8");
     $doc->setDocumentElement($data->cloneNode(1));
     $data = $doc;
   }
@@ -73,6 +76,31 @@ sub handle {
   $self->log(6,"Produced :\n",$result->toString(1));
   return WebSource::Envelope->new(type => "object/dom-node", data => $result);
 }
+
+#
+# Extension function to reformat dates
+# {http://wwwsource.free.fr/ns/websource/xslt-ext}reformat-date(
+#   date, targetTemplate, sourceLanguage?
+# 
+# )
+sub reformatDate {
+  my ($srcdate,$template,@langs) = @_;
+  my $dsttime = undef;
+  while(!defined($dsttime) && @langs) {
+    my $l = shift @langs;
+    my $lang = Date::Language->new($l);
+    $dsttime = $lang->str2time($srcdate);
+  }
+  if($dsttime) {
+    return time2str($template,$dsttime);
+  } else {
+    return "";
+  }
+}
+
+
+1;
+
 
 =head1 SEE ALSO
 

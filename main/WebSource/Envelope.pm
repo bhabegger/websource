@@ -130,7 +130,8 @@ sub dataXML {
   my $d = $self->data;
   if($t eq "object/dom-node") {
   	if($params{wantdoc} && $d->nodeType ne "#document") {
-  		my $doc = XML::LibXML::Document->createDocument( "1.0", "utf-8");
+  		my $doc = XML::LibXML::Document->createDocument( "1.0", "utf-8" );
+  		
   		my $clone = $d->cloneNode(1);
   		$doc->setDocumentElement($clone);
   		$doc->toString(1);

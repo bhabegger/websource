@@ -1,4 +1,5 @@
 package WebSource::XMLParser;
+use utf8;
 use strict;
 use LWP::UserAgent;
 # use WebSource::Parser;
@@ -10,7 +11,11 @@ use Encode::Guess;
 our @ISA = ('WebSource::Module');
 
 my %html_options = (
-  recover => 1,
+  recover => 2,
+  encoding => 'UTF-8'
+);
+my %xml_options = (
+  recover => 2,
   encoding => 'UTF-8'
 );
 
@@ -46,6 +51,10 @@ sub _init_ {
   my $self = shift;
   $self->SUPER::_init_;
   $self->{parser}         or $self->{parser} = XML::LibXML->new;
+  my $wsd = $self->{wsdnode};
+  if($wsd) {
+    $self->{forceEncoding} = $wsd->getAttribute('force-encoding');
+  }
   return $self;
 }
 
@@ -60,18 +69,23 @@ sub handle {
   my $self = shift;
   my $env = shift;
  
-  $env->type eq "text/html" or
-  ( $env->type eq "text/xml"  or
-     return () );
+#  $env->type eq "text/html" or
+#  ( $env->type eq "text/xml"  or
+#     return () );
  
   my $ct = $env->data;
   my $base = $env->{baseuri};
   my $doc = eval {
     $self->log(5,"Found doctype of '". $env->type . "'");
+    $self->log(6,"-------- data -------------\n" . $ct);
     if ($env->type eq "text/html") {
       $self->{parser}->parse_html_string($ct,\%html_options);
     } else {
-      $self->{parser}->parse_string($ct);
+      if($self->{forceEncoding}) {
+        utf8::downgrade($ct);
+        $ct = decode($self->{forceEncoding},$ct);
+      }
+      $self->{parser}->parse_string($ct,\%xml_options);
     }
   };
   if(!$doc) {
@@ -79,6 +93,8 @@ sub handle {
     $self->log(6,">> here is the content <<\n",$ct,"\n");
     return ();
   }
+  my $bytes = $doc->toString(1);
+  $self->log(6,"-------- parsed -------------\n" . $bytes);
   my %meta = %$env;
   return WebSource::Envelope->new(
            %meta,
