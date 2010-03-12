@@ -93,7 +93,7 @@ sub handle {
     return ();
   }
   my $scheme = $request->uri->scheme;
-  if(!($scheme eq "http" || $scheme eq "ftp" || $scheme eq "https")) {
+  if(!($scheme eq "http" || $scheme eq "ftp" || $scheme eq "https" || $scheme eq "file")) {
     $self->log(1,"Can't fetch scheme ",$scheme);
     return ();
   } 
@@ -117,7 +117,7 @@ sub handle {
   }
   if($response->is_success) {
     $self->log(1, "success");
-    $self->{cookies}->extract_cookies($response);
+#    $self->{cookies}->extract_cookies($response);
 
     my $base = $response->request->uri;
     my %meta = %$data;
@@ -128,9 +128,9 @@ sub handle {
     $meta{encoding} = $response->content_encoding;
     $meta{type} = $response->content_type;
     $meta{baseuri} = $base;
-    $meta{data}    = $response->decoded_content;
-    $self->log(5,"Content-Type: ".$meta{type});
-    $self->log(5,"Content-Encoding: ".$meta{encoding});
+    $meta{data}    = $response->content;
+    $self->log(2,"Content-Type: ".$meta{type});
+    $self->log(2,"Content-Encoding: ".$meta{encoding});
     return WebSource::Envelope->new(%meta);
   } else {
     if ($response->{request}) {

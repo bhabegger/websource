@@ -11,12 +11,10 @@ use Encode::Guess;
 our @ISA = ('WebSource::Module');
 
 my %html_options = (
-  recover => 2,
-  encoding => 'UTF-8'
+  recover => 2
 );
 my %xml_options = (
-  recover => 2,
-  encoding => 'UTF-8'
+  recover => 2
 );
 
 =head1 NAME
@@ -76,21 +74,21 @@ sub handle {
   my $ct = $env->data;
   my $base = $env->{baseuri};
   my $doc = eval {
-    $self->log(5,"Found doctype of '". $env->type . "'");
-    $self->log(6,"-------- data -------------\n" . $ct);
+    $self->log(4,"Found doctype of '". $env->type . "'");
+    $self->log(5,"-------- data -------------\n" . $ct);
+    my %options;
+    if($self->{forceEncoding}) {
+    	$ct = decode($self->{forceEncoding},$ct);
+    }
     if ($env->type eq "text/html") {
-      $self->{parser}->parse_html_string($ct,\%html_options);
+    	$self->{parser}->parse_html_string($ct,\%html_options,%options);
     } else {
-      if($self->{forceEncoding}) {
-        utf8::downgrade($ct);
-        $ct = decode($self->{forceEncoding},$ct);
-      }
-      $self->{parser}->parse_string($ct,\%xml_options);
+    	$self->{parser}->parse_string($ct,\%xml_options,%options);
     }
   };
   if(!$doc) {
     $self->log(1,"Couldn't parse document $base : $@");
-    $self->log(6,">> here is the content <<\n",$ct,"\n");
+    $self->log(3,">> here is the content <<\n",$ct,"\n");
     return ();
   }
   my $bytes = $doc->toString(1);

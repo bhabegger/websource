@@ -4,7 +4,7 @@ use strict;
 use WebSource::Module;
 #use File::Temp qw/tempfile/;
 use Carp;
-use DB_File;
+#use DB_File;
 
 our @ISA = ('WebSource::Module');
 
@@ -59,7 +59,7 @@ sub _init_ {
   $self->{cachecount} = 0;
 
   my %index;
-  tie %index, "DB_File", $self->{cachedir} . "/index.db";
+#  tie %index, "DB_File", $self->{cachedir} . "/index.db";
   $self->{cacheindex} = \%index;
 
   $self->log(1,"Saving fetched files to directory ",$self->{cachedir},
