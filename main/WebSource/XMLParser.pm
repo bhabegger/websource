@@ -74,11 +74,13 @@ sub handle {
   my $ct = $env->data;
   my $base = $env->{baseuri};
   my $doc = eval {
-    $self->log(4,"Found doctype of '". $env->type . "'");
+    $self->log(2,"Found doctype of '". $env->type . "' with encoding '" . $env->{encoding} ."'");
     $self->log(5,"-------- data -------------\n" . $ct);
     my %options;
     if($self->{forceEncoding}) {
     	$ct = decode($self->{forceEncoding},$ct);
+    } elsif($env->{encoding}) {
+        $ct = decode($env->{encoding},$ct);
     }
     if ($env->type eq "text/html") {
     	$self->{parser}->parse_html_string($ct,\%html_options,%options);

@@ -224,11 +224,12 @@ sub produce {
   my @prods = @{$self->{producers}};
   my $done = 0;
   while(!@{$self->{results}} && !$done) {
-    $self->log(5,"Asking our ",scalar(@prods)," producers to produce");
+    $self->log(1,"Asking our ",scalar(@prods)," producers to produce");
     my @res = map {
       $_->produce(%map) 
     } @prods;
     $done = !@res;
+    $self->log(1,"Queue has ",scalar(@{$self->{results}})," pending items");
   }
 #  while(!@{$self->{results}} && @prods) {
 #    my $prod = shift @prods;

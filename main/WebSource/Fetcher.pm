@@ -124,12 +124,20 @@ sub handle {
     $self->log(6,"Meta data is as follows :\n",
          map{ $_ . " => " . $meta{$_} ."\n" } keys(%meta)
     );
+    $self->log(3,$response->headers->as_string());
     $response->headers->scan(sub { my ($h,$v) = @_; $meta{$h} = $v; });
-    $meta{encoding} = $response->content_encoding;
-    $meta{type} = $response->content_type;
+    if($meta{'Content-Type'}) {
+      $self->log(2,"Parsing Content-Type: ".$meta{'Content-Type'});
+      
+      if($meta{'Content-Type'} =~ m/([A-Za-z0-9\/\-]+)(?:;\s+charset=([a-zA-Z0-9\-]+))/) {
+        $meta{type} = $1;
+        $meta{encoding} = $2;
+      }
+    }
+#    $meta{encoding} = $response->content_encoding;
+#    $meta{type} = $response->content_type;
     $meta{baseuri} = $base;
     $meta{data}    = $response->content;
-    $self->log(2,"Content-Type: ".$meta{type});
     $self->log(2,"Content-Encoding: ".$meta{encoding});
     return WebSource::Envelope->new(%meta);
   } else {
