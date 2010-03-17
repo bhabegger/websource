@@ -41,6 +41,17 @@ sub new {
   my $wsd = $self->{wsdnode};
   if($wsd) {
     $wsd->setNamespace("http://www.w3.org/1999/XSL/Transform","xsl",0);
+    my %param_mapping;
+    foreach my $paramEl ($wsd->findnodes('xsl:stylesheet/xsl:param')) {
+        my $paramName = $paramEl->getAttribute('name');
+        my $wsEnvKey  = $paramEl->getAttributeNS("http://wwwsource.free.fr/ns/websource","mapped-from");
+        if(!$wsEnvKey) {
+          $wsEnvKey = $paramName;
+        }
+        $self->log(2,"Found parameter : $paramName (mapped from $wsEnvKey)");
+        $param_mapping{$paramName} = $wsEnvKey;
+    }
+    $self->{xslparams} = \%param_mapping;
     my @stylesheet = $wsd->findnodes('xsl:stylesheet');
     if(@stylesheet) {
       my $wsdoc = $wsd->ownerDocument;
@@ -71,7 +82,14 @@ sub handle {
     $data = $doc;
   }
   $self->log(6,"We have : \n".$data->toString(1)."\n");
-  my $result = $self->{xsl}->transform($data);
+  my $mapping = $self->{xslparams};
+  my %parameters;
+  foreach my $param (keys(%$mapping)) {
+    my $value = $env->{$param};
+    $self->log(2,"Found value of $param : ",$value);
+    $parameters{$param} = $value;
+  }
+  my $result = $self->{xsl}->transform($data,XML::LibXSLT::xpath_to_string(%parameters));
   $self->{format} eq "document" or $result = $result->documentElement;
   $self->log(6,"Produced :\n",$result->toString(1));
   return WebSource::Envelope->new(type => "object/dom-node", data => $result);
