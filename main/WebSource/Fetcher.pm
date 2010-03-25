@@ -5,6 +5,7 @@ use LWP::UserAgent;
 use HTTP::Cookies;
 use WebSource::Module;
 use Carp;
+eval "use Net::INET6Glue::INET_is_INET6"; # use Net::INET6Glue::INET_is_INET6 when available
 
 our @ISA = ('WebSource::Module');
 
@@ -129,7 +130,7 @@ sub handle {
     if($meta{'Content-Type'}) {
       $self->log(2,"Parsing Content-Type: ".$meta{'Content-Type'});
       
-      if($meta{'Content-Type'} =~ m/([A-Za-z0-9\/\-]+)(?:;\s+charset=([a-zA-Z0-9\-]+))/) {
+      if($meta{'Content-Type'} =~ m/([A-Za-z0-9\/\-]+)(?:;\s+charset=([a-zA-Z0-9\-]+))?/) {
         $meta{type} = $1;
         $meta{encoding} = $2;
       }
