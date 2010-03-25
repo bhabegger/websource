@@ -1,8 +1,8 @@
 package WebSource;
-our $REVSTR = '$Revision: 1.11 $';
+our $REVSTR = '$Revision: 1.12 $';
 $REVSTR =~ m/Revision: ([^ ]+)/;
 our $REVISION = $1;
-our $VERSION='2.4.2';
+our $VERSION='2.4.3';
 
 use strict;
 use Carp;
