@@ -45,7 +45,7 @@ Current existing flavors include :
 
 =item regexep : extract data using a regular expression
 
-=back 2
+=back
 
 =head1 SYNOPSIS
 

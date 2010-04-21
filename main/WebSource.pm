@@ -1,5 +1,5 @@
 package WebSource;
-our $REVSTR = '$Revision: 1.12 $';
+our $REVSTR = '$Revision: 1.13 $';
 $REVSTR =~ m/Revision: ([^ ]+)/;
 our $REVISION = $1;
 our $VERSION='2.4.3';
@@ -105,7 +105,7 @@ Use a generic engine with the given source description file
 
 Do not output more than max_results
 
-=back 2
+=back
 
 =cut
 
@@ -321,7 +321,7 @@ sub next_result {
   return $res;
 }
 
-=back 2
+=back
 
 =item B<< $source->parameters; >>
 

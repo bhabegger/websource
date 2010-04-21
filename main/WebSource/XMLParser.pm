@@ -103,7 +103,7 @@ sub handle {
            data    => $doc);
 }
 
-=back 2
+=back
 
 =head1 SEE ALSO
 
