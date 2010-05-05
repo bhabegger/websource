@@ -22,7 +22,7 @@ use sigtrap qw(die normal-signals);
 use strict;
 use warnings;
 
-my $REVSTR = '$Revision: 1.4 $';
+my $REVSTR = '$Revision: 1.5 $';
 $REVSTR =~ m/Revision: ([^ ]+)/;
 my $REVISION = $1;
 my $VERSION = '2.3';
@@ -79,7 +79,7 @@ while(!$params{wsd} && $opt) {
       exit(0);
     }
     if($opt eq "x") {
-      $list = $val;
+      $xlist = $val;
     }
     if($opt eq "v") {
       defined($val) or $val = 3;
@@ -136,7 +136,7 @@ if($mode eq "query") {
 }
 
 while($_ = $ws->next_result) {
-  $xlist and print STDOUT "<$list>\n";
+  $xlist and print STDOUT "<$xlist>\n";
   print STDOUT $_->dataString, "\n";
-  $xlist and print STDOUT "</$list>\n";
+  $xlist and print STDOUT "</$xlist>\n";
 };
