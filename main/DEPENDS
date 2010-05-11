@@ -4,4 +4,4 @@ LWP::UserAgent		| libwww-perl			|
 XML::LibXML			| libxml-libxml-perl	|
 XML::LibXSLT		| libxml-libxslt-perl	|
 Getopt::Mixed		| libgetopt-mixed-perl	|
-Date::Language		| 						|
+Date::Language		| libtimedate-perl		|
