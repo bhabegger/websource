@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ws:source xmlns:ws="http://wwwsource.free.fr/ns/websource">
+  <ws:meta-tag name="meta-test" forward-to="out">
+    <tag name="hello" value="bonjour" />
+  </ws:meta-tag>
+  
+  <ws:dummy name="out" />
+</ws:source>

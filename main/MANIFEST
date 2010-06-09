@@ -35,4 +35,7 @@ WebSource/Map.pm
 WebSource/DB.pm
 WebSource/XMLSender.pm
 t/001-main.t
+t/002-meta-tag.t
+t/002-meta-tag.xml
 t/101-filters.t
+t/201-extract-xslt.t
