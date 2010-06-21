@@ -2,7 +2,7 @@ package WebSource;
 our $REVSTR = '$Revision: 1.13 $';
 $REVSTR =~ m/Revision: ([^ ]+)/;
 our $REVISION = $1;
-our $VERSION='2.4.5';
+our $VERSION='2.4.6';
 
 use strict;
 use Carp;
@@ -471,15 +471,16 @@ sub apply_imports {
     foreach my $el ($im_doc->documentElement->childNodes) {
     	$el->nodeType == 1 or next;
     	my $nodeType = $el->localName;
+    	my $ael = $doc->importNode($el);
     	if($nodeType eq 'options') {
     		# If options have not been locally redefined import them
     		if(!$xpc->exists('//ws:options')) {
-				$im_par->insertBefore($el,$im_node);
+				$im_par->insertBefore($ael,$im_node);
 			}	
     	} else {
 	    	my $name = $el->getAttribute("name");
 			if(!$xpc->exists('//*[@name="' . $name . '"]')) {
-				$im_par->insertBefore($el,$im_node);
+				$im_par->insertBefore($ael,$im_node);
 			}
     	}
     }

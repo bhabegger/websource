@@ -27,15 +27,23 @@ sub _init_ {
   my $self = shift;
   $self->SUPER::_init_;
   my %tags;
+  my %dynTags;
   my $wsd = $self->{wsdnode};
   if($wsd) {
     foreach my $tagEl ($wsd->findnodes("tag")) {
-    	my $key   = $tagEl->getAttribute("name");
-    	my $value = $tagEl->getAttribute("value");
-    	$tags{$key} = $value;
+    	my $key    = $tagEl->getAttribute("name");
+    	my $source = $tagEl->getAttribute("source");
+    	$source or $source = 'static';
+    	if($source eq 'static') {
+    	  my $value  = $tagEl->getAttribute("value");
+    	  $tags{$key} = $value;
+        } elsif ($source eq 'content') {
+          $dynTags{$key} = 1;
+        }
     }
   }
-  $self->{tags} = \%tags;
+  $self->{staticTags} = \%tags;
+  $self->{dynamicTags} = \%dynTags;
   return $self;
 }
 
@@ -43,7 +51,10 @@ sub _init_ {
 sub handle {
   my $self = shift;
   my $env = shift;
-  my %tags = %{$self->{tags}};
+  my %tags = %{$self->{staticTags}};
+  foreach my $dynTag (keys(%{$self->{dynamicTags}})) {
+    $tags{$dynTag} = $env->data;
+  }
   if($self->will_log(3)) {
 	$self->log(3,"Forcing meta tags: " . join(", ", map { $_  . "=" . $tags{$_} } keys(%tags)));  	
   }

@@ -1,4 +1,6 @@
 package WebSource::Extract::xslt;
+
+use WebSource::Module;
 use strict;
 use XML::LibXML;
 use XML::LibXSLT;
@@ -40,9 +42,10 @@ sub new {
   $self->SUPER::_init_;
   my $wsd = $self->{wsdnode};
   if($wsd) {
-    $wsd->setNamespace("http://www.w3.org/1999/XSL/Transform","xsl",0);
+  	my $xpc = XML::LibXML::XPathContext->new($wsd);
+  	$xpc->registerNs("x","http://www.w3.org/1999/XSL/Transform");
     my %param_mapping;
-    foreach my $paramEl ($wsd->findnodes('xsl:stylesheet/xsl:param')) {
+    foreach my $paramEl ($xpc->findnodes('x:stylesheet/x:param')) {
         my $paramName = $paramEl->getAttribute('name');
         my $wsEnvKey  = $paramEl->getAttributeNS("http://wwwsource.free.fr/ns/websource","mapped-from");
         if(!$wsEnvKey) {
@@ -52,22 +55,32 @@ sub new {
         $param_mapping{$paramName} = $wsEnvKey;
     }
     $self->{xslparams} = \%param_mapping;
-    my @stylesheet = $wsd->findnodes('xsl:stylesheet');
+    my @stylesheet = $xpc->findnodes('x:stylesheet');
     if(@stylesheet) {
       my $wsdoc = $wsd->ownerDocument;
       my $xsltdoc = XML::LibXML::Document->new($wsdoc->version,$wsdoc->encoding);
-      $xsltdoc->setDocumentElement($stylesheet[0]->cloneNode(1));
-      my $xslt = XML::LibXSLT->new();	
-      $xslt->register_function('http://wwwsource.free.fr/ns/websource/xslt-ext','reformat-date','WebSource::Extract::xslt::reformatDate');
-      $xslt->register_function('http://wwwsource.free.fr/ns/websource/xslt-ext','string-replace','WebSource::Extract::xslt::stringReplace');
-      $xslt->register_function('http://wwwsource.free.fr/ns/websource/xslt-ext','html-lint','WebSource::Extract::xslt::htmlLint');
-      $self->{xsl} = $xslt->parse_stylesheet($xsltdoc);
+      my $xsltroot = $stylesheet[0]->cloneNode(1);
+      my $importedRoot = $xsltdoc->importNode($xsltroot);
+      $xsltdoc->setDocumentElement($importedRoot);
+      $self->{xsldoc} = $xsltdoc;
       $self->{format} = $wsd->getAttribute("format");
     } else {
       croak "No stylesheet found\n";
     }
   }
-  $self->{xsl} or croak "No XSLT stylesheet given";
+  if(!$self->{xsldoc} && $self->{xslfile}) {
+  	my $parser = XML::LibXML->new();
+	$self->{xsldoc} = $parser->parse_file($self->{xslfile});
+  }
+  $self->{xsldoc} or croak "No XSLT stylesheet given";
+  
+  my $xslt = XML::LibXSLT->new();
+  $xslt->register_function('http://wwwsource.free.fr/ns/websource/xslt-ext','reformat-date','WebSource::Extract::xslt::reformatDate');
+  $xslt->register_function('http://wwwsource.free.fr/ns/websource/xslt-ext','string-replace','WebSource::Extract::xslt::stringReplace');
+  $xslt->register_function('http://wwwsource.free.fr/ns/websource/xslt-ext','html-lint','WebSource::Extract::xslt::htmlLint');
+  $self->{xsl} = $xslt->parse_stylesheet($self->{xsldoc});
+  $self->{xsl} or croak "Couln't load XSLT stylesheet";
+  
   return $self;
 }
 
@@ -132,10 +145,10 @@ sub reformatDate {
   while(!defined($dsttime) && @langs) {
     my $l = shift @langs;
     my $lang = Date::Language->new($l);
-    $dsttime = $lang->str2time($srcdate);
+    $dsttime = $lang->str2time($srcdate,"GMT");
   }
   if($dsttime) {
-    return time2str($template,$dsttime);
+    return time2str($template,$dsttime,"GMT");
   } else {
     return "";
   }

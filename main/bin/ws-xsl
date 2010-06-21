@@ -12,22 +12,24 @@ apply xsl stylesheets to HTML documents (hopefully even badly formatted ones).
 =cut
 
 use WebSource::Parser;
-use XML::LibXSLT;
+use WebSource::Envelope;
+use WebSource::Extract::xslt;
+
 use Getopt::Mixed;
 
 Getopt::Mixed::getOptions(
   "s=s stylesheet>s",
+  "H html>H",
 );
 
 $opt_s or die "No stylesheet given\n";
 
 my $parser = WebSource::Parser->new;
-my $xsldoc = $parser->parse_file($opt_s);
-my $xsltparser = XML::LibXSLT->new;
-my $xsl = $xsltparser->parse_stylesheet($xsldoc);
+
+my $wsXsl = WebSource::Extract::xslt->new(name=> "XSLT", xslfile => $opt_s);
 
 foreach my $file (@ARGV) {
-  my $doc = $parser->parse_html_file($file);
-  my $results =  $xsl->transform($doc);
-  print $xsl->output_string($results);
+  my $doc = $opt_H ? $parser->parse_html_file($file) : $parser->parse_file($file);
+  my $res =  $wsXsl->handle(new WebSource::Envelope( data => $doc, type=> "object/dom-node", format => document));
+  print $res->dataXML;
 }

@@ -56,14 +56,16 @@ WebSource::Envelope - Container for exchanged data
 =cut
 
 our %knowntypes = (
-	"object/dom-node"      => 1,
-	"object/http-request"  => 1,
-	"text/string"          => 1,
-	"text/html"            => 1,
-	"text/xml"             => 1,
-	"object/uri"           => 1,
-        "application/pdf"      => 1,
-        "empty"                => 1
+	"object/dom-node"		=> 1,
+	"object/http-request"	=> 1,
+	"text/string"			=> 1,
+	"text/html"				=> 1,
+	"text/xml"				=> 1,
+	"object/uri"			=> 1,
+    "empty"					=> 1,
+    "application/pdf"		=> 1,
+    "application/rss"		=> 1,
+    "application/xml"		=> 1,
 );
 
 sub new {
