@@ -75,7 +75,9 @@ sub handle {
   my $base = $env->{baseuri};
   my $doc = eval {
     $self->log(2,"Found doctype of '". $env->type . "' with encoding '" . $env->{encoding} ."'");
-    $self->log(5,"-------- data -------------\n" . $ct);
+    if($self->will_log(6)) {
+	    $self->log(6,"-------- data -------------\n" . $ct);
+    }
     my %options;
     if($self->{forceEncoding}) {
     	$ct = decode($self->{forceEncoding},$ct);
@@ -96,7 +98,9 @@ sub handle {
     return ();
   }
   my $bytes = $doc->toString(1,'utf-8');
-  $self->log(6,"-------- parsed -------------\n" . $bytes);
+  if($self->will_log(6)) {
+	  $self->log(6,"-------- parsed -------------\n" . $bytes);
+  }
   my %meta = %$env;
   return WebSource::Envelope->new(
            %meta,

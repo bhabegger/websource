@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /
+RewriteRule ^$ https://sourceforge.net/apps/trac/websource/
+RewriteRule index.html? https://sourceforge.net/apps/trac/websource/
+RewriteRule (.*).html? https://sourceforge.net/apps/trac/websource/wiki/$1
+
+
