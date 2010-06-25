@@ -91,12 +91,12 @@ sub handle {
     	$self->{parser}->parse_string($ct,\%xml_options,%options);
     }
   };
-  $doc->setEncoding('utf-8');
   if(!$doc) {
     $self->log(1,"Couldn't parse document $base : $@");
     $self->log(3,">> here is the content <<\n",$ct,"\n");
     return ();
   }
+  $doc->setEncoding('utf-8');
   my $bytes = $doc->toString(1,'utf-8');
   if($self->will_log(6)) {
 	  $self->log(6,"-------- parsed -------------\n" . $bytes);
