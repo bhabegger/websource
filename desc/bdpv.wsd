@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE ws:source SYSTEM "websource.dtd">
+<ws:source name="apec.fr" xmlns:ws="http://wwwsource.free.fr/ns/websource">
+  <ws:fetch name="fiche-fetcher" forward-to="fiche-filter">
+    <data>http://www.bdpv.fr/fiche_utilisateur.php?util=miribel01</data>
+  </ws:fetch>
+
+  <ws:filter name="fiche-filter" forward-to="fiche-parse"/>
+
+  <ws:xmlparser name="fiche-parse" forward-to="fiche-link fiche-extract" />
+
+  <ws:extract name="fiche-link" forward-to="fiche-fetcher">
+    <path>//a[contains(@href,"fiche_utilisateur.php")]/@href</path>
+  </ws:extract>
+
+  <ws:extract type="xslt" name="fiche-extract"
+              xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:stylesheet version="1.0">
+      <xsl:output method="xml" indent="yes" />
+      
+      <xsl:template match="/">
+      	<oml:object
+          xmlns:oml="http://objectml.org/ns/200905/ObjectML"
+          xmlns:cat="http://objectml.org/ns/200905/Categories"
+          xmlns:slp="http://objectml.org/ns/200905/Categories"
+          oml:datasource="http://www.apec.fr/"
+          oml:category="cat:solar-plants">
+            <xsl:attribute name="oml:id">
+            	<xsl:text>http://solar-plants.objectml.org/www.bdpv.fr/</xsl:text>
+            	<xsl:value-of select="//h1" />
+            </xsl:attribute>
+            <xsl:attribute name="oml:name">
+              	<xsl:value-of select="//h1" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:date-installed">
+            	<xsl:variable name="rawdate" select="//font[starts-with(.,'Raccordement')]/following-sibling::text()[1]" />
+            	<xsl:value-of select="substring-after($rawdate,'/')" />
+            	<xsl:value-of select="substring-before($rawdate,'/')" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:location">
+            	<xsl:value-of select="substring-after(substring-before(//font[starts-with(.,'Département')]/following-sibling::text()[1],')'),'(')" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:altitude">
+            	<xsl:value-of select="//font[starts-with(.,'Altitude')]/following-sibling::text()[1]" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:peek-performance">
+            	<xsl:value-of select="//font[starts-with(.,'Puissance crête')]/following-sibling::text()[1]" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:expected-performance">
+	            <xsl:value-of select="//font[starts-with(.,'Production attendue')]/following-sibling::text()[1]" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:inverter">
+	            <xsl:value-of select="//font[starts-with(.,'Onduleur')]/following-sibling::text()[1]" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:surface">
+	            <xsl:value-of select="//font[starts-with(.,'Surface')]/following-sibling::text()[1]" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:brand">
+	            <xsl:value-of select="//font[starts-with(.,'Panneaux')]/following-sibling::text()[1]" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:sales-type">
+	            <xsl:value-of select="//font[starts-with(.,'Type de vente')]/following-sibling::text()[1]" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:slant">
+	            <xsl:value-of select="//font[starts-with(.,'Pente')]/following-sibling::text()[1]" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:orientation">
+	            <xsl:value-of select="//font[starts-with(.,'Orientation')]/following-sibling::text()[1]" />
+            </xsl:attribute>
+            <xsl:attribute name="slp:installer">
+            	<xsl:apply-templates select="//font[starts-with(.,'Installateur')]/following-sibling::node()[1]" mode="installer" />
+            </xsl:attribute>
+         </oml:object>      
+      </xsl:template>
+
+      <xsl:template match="a" mode="installer">
+      	<xsl:value-of select="substring-after(.,'=')" />
+      </xsl:template>
+      
+      <xsl:template match="text()" mode="installer">
+      	<xsl:value-of select="." />
+      </xsl:template>
+     </xsl:stylesheet>
+  </ws:extract>
+</ws:source>

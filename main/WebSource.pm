@@ -131,6 +131,7 @@ sub new {
   $param{maxreqinterval} or $param{maxreqinterval} = 3;
   $param{maxtries}       or $param{maxtries} = 3;
   $param{parser}         or $param{parser} = XML::LibXML->new;
+  $param{parser}->recover(1);
   $param{parser}->expand_xinclude(1);
   $param{result_count} = 0;
   my $self = bless \%param, $class;

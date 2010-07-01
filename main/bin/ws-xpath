@@ -19,16 +19,19 @@ Getopt::Mixed::getOptions(
   "e=s expr>e",
   "c count>c",
   "h help>h",
+  "F filename",
 );
 
 sub usage {
   print <<END;
 USAGE : $0 [options] <file>...
-Mandatory options
+Mandatory arguments
 -e <expr> or --expr=<expr>      the xpath to search for
+Optional arguments
 -c        or --count            return the number of results rather than the results
 -h        or --help             print this help message
 -s        or --separator        string used to separate results (default "--\\n")
+-F		  or --filename			output the filename as well a the result
 END
 }
 
@@ -48,8 +51,23 @@ foreach my $file (@ARGV) {
     if($opt_c) {
       print $result->size(),"\n";    
     } else {
+      my $first = 1;
       foreach my $node ($result->get_nodelist()) {
-        print $opt_s,$node->toString(1),"\n";
+      	my $output;
+      	if(UNIVERSAL::isa($node,XML::LibXML::CDATASection)) {
+      		$output = $node->data;
+      	} else {
+      		$output = $node->toString(1);
+      	}
+      	if($first) {
+      		$first = 0;
+      	} else {
+      		print $opt_s;
+      	}
+      	if($opt_F) {
+      		print "[", $file, "] ";
+      	}
+        print $output,"\n";
       }
     }
   } else {
