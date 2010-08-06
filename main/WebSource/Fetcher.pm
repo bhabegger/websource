@@ -108,7 +108,9 @@ sub handle {
   $tries > 0 or $tries = 1; 
   my $response;
   while($tries > 0) {
-    $self->temporize();
+  	if($self->{maxtries} > $tries) {
+      $self->temporize();
+  	}     
     $self->log(5, "Try ",  $self->{maxtries} - $tries + 1, " / ", $self->{maxtries});
     $response = $self->{useragent}->request($request);;
     $tries = $response->is_success ? 0 : $tries - 1;
