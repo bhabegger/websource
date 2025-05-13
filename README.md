@@ -27,15 +27,19 @@ sent to all the tasks which can be reached through an outgoing link.
 
 
 INSTALLATION
+------------
 
 To install this module type the following:
 
+```
    perl Makefile.PL
    make
    make test
    make install
+```
 
 DEPENDENCIES
+------------
 
 This module depends on :
  - URI               : URI handling in perl
@@ -46,12 +50,16 @@ This module depends on :
  - Getopt::Mixed     : option processing used in ws-query
  - SOAP::Lite        : access to web services (ws:soap)
  - String::Approx    : approximate string matching
+
 USAGE 
+-----
 
 The most common usage of WebSource is done by using the ws-query
 command. A typical call is :
 
+```
 ws-query [options] -s <desc file> <parameters>
+```
 
 where options are ws-query options and parameters are specific to the 
 used source description file (<ws:options> element)
@@ -59,11 +67,13 @@ used source description file (<ws:options> element)
 More info on the ws-query command can be obtained by calling it with
 the -h option ...
 
+```
 $ ws-query -h
-
+```
 
 
 COPYRIGHT AND LICENCE
+---------------------
 
 Copyright (C) 2004 Benjamin Habegger
 
